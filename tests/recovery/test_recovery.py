@@ -64,8 +64,9 @@ def test_daily_restart_matches_continuous_and_repeated_day(market, config):
         for c in tables["calendar"]
         if c.exchange == "XSHG"
         and c.is_open
-        and date(2025, 4, 23) <= c.trade_date <= date(2025, 5, 6)
+        and date(2025, 4, 22) <= c.trade_date <= date(2025, 5, 6)
     ]
+    assert len(days) == 10
     # Same config identity and input produce the same economic facts across restarts.
     results = []
     for name, restart in (("continuous", False), ("restart", True)):
