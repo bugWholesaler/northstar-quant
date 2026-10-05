@@ -1,0 +1,128 @@
+[
+  {
+    "repo": "ricequant/rqalpha",
+    "url": "https://github.com/ricequant/rqalpha",
+    "default_branch": "master",
+    "sha": "0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f",
+    "commit_date": "2026-09-24T03:26:27Z",
+    "stars": 6807,
+    "forks": 1794,
+    "archived": false,
+    "license": {
+      "key": "other",
+      "name": "Other",
+      "spdx_id": "NOASSERTION",
+      "url": null,
+      "node_id": "MDc6TGljZW5zZTA="
+    },
+    "checked_at": "2026-10-04"
+  },
+  {
+    "repo": "vnpy/vnpy",
+    "url": "https://github.com/vnpy/vnpy",
+    "default_branch": "master",
+    "sha": "f6e303547b2de75a3a5239c9ec9b9c739656ec8d",
+    "commit_date": "2026-10-04T06:45:31Z",
+    "stars": 45682,
+    "forks": 12496,
+    "archived": false,
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "spdx_id": "MIT",
+      "url": "https://api.github.com/licenses/mit",
+      "node_id": "MDc6TGljZW5zZTEz"
+    },
+    "checked_at": "2026-10-04"
+  },
+  {
+    "repo": "microsoft/qlib",
+    "url": "https://github.com/microsoft/qlib",
+    "default_branch": "main",
+    "sha": "be725493eb1a6bbb42bf11b37aa7669f59610ff1",
+    "commit_date": "2026-09-16T06:56:07Z",
+    "stars": 49124,
+    "forks": 7757,
+    "archived": false,
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "spdx_id": "MIT",
+      "url": "https://api.github.com/licenses/mit",
+      "node_id": "MDc6TGljZW5zZTEz"
+    },
+    "checked_at": "2026-10-04"
+  },
+  {
+    "repo": "microsoft/RD-Agent",
+    "url": "https://github.com/microsoft/RD-Agent",
+    "default_branch": "main",
+    "sha": "484776c211e4fbbeef03e0ec00d6bbee7362a4f4",
+    "commit_date": "2026-09-23T11:05:10Z",
+    "stars": 14836,
+    "forks": 1947,
+    "archived": false,
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "spdx_id": "MIT",
+      "url": "https://api.github.com/licenses/mit",
+      "node_id": "MDc6TGljZW5zZTEz"
+    },
+    "checked_at": "2026-10-04"
+  },
+  {
+    "repo": "QuantConnect/Lean",
+    "url": "https://github.com/QuantConnect/Lean",
+    "default_branch": "master",
+    "sha": "705b9551be1aaa821c7f77896a7eb8fcd07b92ee",
+    "commit_date": "2026-10-02T20:45:15Z",
+    "stars": 21854,
+    "forks": 5280,
+    "archived": false,
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "spdx_id": "Apache-2.0",
+      "url": "https://api.github.com/licenses/apache-2.0",
+      "node_id": "MDc6TGljZW5zZTI="
+    },
+    "checked_at": "2026-10-04"
+  },
+  {
+    "repo": "nautechsystems/nautilus_trader",
+    "url": "https://github.com/nautechsystems/nautilus_trader",
+    "default_branch": "develop",
+    "sha": "2c319bc62e952346253df8e13f416feac2dae7c1",
+    "commit_date": "2026-10-04T08:18:20Z",
+    "stars": 29609,
+    "forks": 3918,
+    "archived": false,
+    "license": {
+      "key": "lgpl-3.0",
+      "name": "GNU Lesser General Public License v3.0",
+      "spdx_id": "LGPL-3.0",
+      "url": "https://api.github.com/licenses/lgpl-3.0",
+      "node_id": "MDc6TGljZW5zZTEy"
+    },
+    "checked_at": "2026-10-04"
+  },
+  {
+    "repo": "fasiondog/hikyuu",
+    "url": "https://github.com/fasiondog/hikyuu",
+    "default_branch": "master",
+    "sha": "daeb2c792a2095178fd5af051eda76d1b23e96c6",
+    "commit_date": "2026-09-30T14:39:05Z",
+    "stars": 3543,
+    "forks": 836,
+    "archived": false,
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "spdx_id": "Apache-2.0",
+      "url": "https://api.github.com/licenses/apache-2.0",
+      "node_id": "MDc6TGljZW5zZTI="
+    },
+    "checked_at": "2026-10-04"
+  }
+]

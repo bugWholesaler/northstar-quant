@@ -1,0 +1,693 @@
+{
+  "researched_at": "2026-10-04",
+  "source_count": 59,
+  "sources": [
+    {
+      "title": "RQAlpha",
+      "url": "https://github.com/ricequant/rqalpha",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R01"
+    },
+    {
+      "title": "vn.py",
+      "url": "https://github.com/vnpy/vnpy",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R02"
+    },
+    {
+      "title": "Qlib",
+      "url": "https://github.com/microsoft/qlib",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R03"
+    },
+    {
+      "title": "RD-Agent",
+      "url": "https://github.com/microsoft/RD-Agent",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md",
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R04"
+    },
+    {
+      "title": "LEAN",
+      "url": "https://github.com/QuantConnect/Lean",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R05"
+    },
+    {
+      "title": "NautilusTrader",
+      "url": "https://github.com/nautechsystems/nautilus_trader",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R06"
+    },
+    {
+      "title": "Hikyuu",
+      "url": "https://github.com/fasiondog/hikyuu",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R07"
+    },
+    {
+      "title": "固定版本源码",
+      "url": "https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/rqalpha/mod/rqalpha_mod_sys_simulation/mod.py#L60",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_source_code_read_at_pinned_commit",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R08"
+    },
+    {
+      "title": "配置源码",
+      "url": "https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/rqalpha/mod/rqalpha_mod_sys_accounts/__init__.py",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_source_code_read_at_pinned_commit",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R09"
+    },
+    {
+      "title": "账户源码",
+      "url": "https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/rqalpha/mod/rqalpha_mod_sys_accounts/position_model.py",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_source_code_read_at_pinned_commit",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R10"
+    },
+    {
+      "title": "扩展数据源",
+      "url": "https://rqalpha.readthedocs.io/zh-cn/latest/development/data_source.html",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R11"
+    },
+    {
+      "title": "LICENSE",
+      "url": "https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/LICENSE",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_source_code_read_at_pinned_commit",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R12"
+    },
+    {
+      "title": "engine.py",
+      "url": "https://github.com/vnpy/vnpy/blob/f6e303547b2de75a3a5239c9ec9b9c739656ec8d/vnpy/trader/engine.py",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_source_code_read_at_pinned_commit",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R13"
+    },
+    {
+      "title": "股票日线",
+      "url": "https://tushare.pro/document/2?doc_id=27",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R14"
+    },
+    {
+      "title": "分红送股",
+      "url": "https://tushare.pro/document/2?doc_id=103",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md",
+        "DAILY_RUNBOOK.md"
+      ],
+      "checked_at": "2026-10-05",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R15"
+    },
+    {
+      "title": "股票历史列表",
+      "url": "https://tushare.pro/document/2?doc_id=262",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R16"
+    },
+    {
+      "title": "ST 列表",
+      "url": "https://tushare.pro/document/2?doc_id=397",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md",
+        "DAILY_RUNBOOK.md"
+      ],
+      "checked_at": "2026-10-05",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R17"
+    },
+    {
+      "title": "ETF 限价",
+      "url": "https://tushare.pro/document/2?doc_id=491",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R18"
+    },
+    {
+      "title": "RQData",
+      "url": "https://www.ricequant.com/doc/rqdata/python/stock-mod.html",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md",
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R19"
+    },
+    {
+      "title": "DuckDB",
+      "url": "https://duckdb.org/docs/current/connect/concurrency",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md",
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R20"
+    },
+    {
+      "title": "SQLite",
+      "url": "https://www.sqlite.org/wal.html",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R21"
+    },
+    {
+      "title": "官方 workflow",
+      "url": "https://qlib.readthedocs.io/en/latest/component/workflow.html",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md",
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R22"
+    },
+    {
+      "title": "场景",
+      "url": "https://rdagent.readthedocs.io/en/latest/scens/quant_agent_fin.html",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R23"
+    },
+    {
+      "title": "主仓",
+      "url": "https://github.com/OnePunchMonk/AgentQuant",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R24"
+    },
+    {
+      "title": "AlphaAgent",
+      "url": "https://github.com/RndmVariableQ/AlphaAgent",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R25"
+    },
+    {
+      "title": "QuantHarness",
+      "url": "https://github.com/Y-Research-SBU/QuantHarness",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R26"
+    },
+    {
+      "title": "海通原始材料",
+      "url": "https://www.htsec.com/jfimg/colimg/upload/20240430/1714455637218041379.pdf",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "prior_research_verified_this_round_fetch_failed",
+      "boundary": "原 HANDOFF 记载已读 PDF，本轮重访失败；未复核业绩",
+      "id": "R27"
+    },
+    {
+      "title": "趋势",
+      "url": "https://www.aqr.com/Insights/Research/Journal-Article/Time-Series-Momentum",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md",
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R28"
+    },
+    {
+      "title": "低 beta",
+      "url": "https://www.aqr.com/Insights/Research/Journal-Article/Betting-Against-Beta",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R29"
+    },
+    {
+      "title": "回测过拟合",
+      "url": "https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R30"
+    },
+    {
+      "title": "RD-Agent-Quant",
+      "url": "https://arxiv.org/abs/2505.15155",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R31"
+    },
+    {
+      "title": "迅投官方文档",
+      "url": "https://dict.thinktrader.net/nativeApi/xttrader.html",
+      "referenced_by": [
+        "RESEARCH_DECISIONS.md",
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R32"
+    },
+    {
+      "title": "ETF 日线",
+      "url": "https://tushare.pro/document/2?doc_id=127",
+      "referenced_by": [
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R33"
+    },
+    {
+      "title": "基金因子",
+      "url": "https://tushare.pro/document/2?doc_id=199",
+      "referenced_by": [
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R34"
+    },
+    {
+      "title": "基金分红",
+      "url": "https://tushare.pro/document/2?doc_id=120",
+      "referenced_by": [
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R35"
+    },
+    {
+      "title": "权限表",
+      "url": "https://tushare.pro/document/2?doc_id=290",
+      "referenced_by": [
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R36"
+    },
+    {
+      "title": "印花税公告",
+      "url": "https://jiangsu.chinatax.gov.cn/art/2023/8/28/art_8349_432258.html",
+      "referenced_by": [
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R37"
+    },
+    {
+      "title": "股息红利税通知",
+      "url": "https://www.chinatax.gov.cn/n810341/n810755/c1797427/content.html",
+      "referenced_by": [
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R38"
+    },
+    {
+      "title": "上交所通知",
+      "url": "https://www.sse.com.cn/lawandrules/sselawsrules2025/fund/trading/c/c_20260424_10817739.shtml",
+      "referenced_by": [
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-05",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R39"
+    },
+    {
+      "title": "深交所通知",
+      "url": "https://investor.szse.cn/lawrules/rule/trade/t20260424_620190.html",
+      "referenced_by": [
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R40"
+    },
+    {
+      "title": "证监会发布说明",
+      "url": "https://www.csrc.gov.cn/csrc/c100028/c7480577/content.shtml",
+      "referenced_by": [
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R41"
+    },
+    {
+      "title": "上交所实施细则",
+      "url": "https://www.sse.com.cn/lawandrules/sselawsrules2025/trade/universal/c/c_20250612_10781696.shtml",
+      "referenced_by": [
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R42"
+    },
+    {
+      "title": "深交所实施细则通知",
+      "url": "https://www.szse.cn/lawrules/rule/trade/t20250403_612770.html",
+      "referenced_by": [
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_notice_search_result_full_page_fetch_failed",
+      "boundary": "只核实官方通知的标题与施行日期；具体应用需看正式附件及券商解释",
+      "id": "R43"
+    },
+    {
+      "title": "SQLite 备份",
+      "url": "https://www.sqlite.org/backup.html",
+      "referenced_by": [
+        "IMPLEMENTATION_PLAN.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "文档或源码审阅，不是安装、数据质量或交易验证",
+      "id": "R44"
+    },
+    {
+      "id": "R45",
+      "title": "PaperAccount",
+      "url": "https://github.com/vnpy/vnpy_paperaccount",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    },
+    {
+      "id": "R46",
+      "title": "Tushare",
+      "url": "https://tushare.pro/document/1",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    },
+    {
+      "id": "R47",
+      "title": "JQData SDK",
+      "url": "https://github.com/JoinQuant/jqdatasdk",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    },
+    {
+      "id": "R48",
+      "title": "AKShare",
+      "url": "https://akshare.akfamily.xyz/introduction.html",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    },
+    {
+      "id": "R49",
+      "title": "SQLite",
+      "url": "https://www.sqlite.org/whentouse.html",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    },
+    {
+      "id": "R50",
+      "title": "PostgreSQL",
+      "url": "https://www.postgresql.org/docs/current/intro-whatis.html",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    },
+    {
+      "id": "R51",
+      "title": "ClickHouse",
+      "url": "https://clickhouse.com/docs/get-started/about/intro",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    },
+    {
+      "id": "R52",
+      "title": "Quality Minus Junk",
+      "url": "https://www.aqr.com/Insights/Research/Working-Paper/Quality-Minus-Junk",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    },
+    {
+      "id": "R53",
+      "title": "PyPortfolioOpt",
+      "url": "https://github.com/PyPortfolio/PyPortfolioOpt",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    },
+    {
+      "id": "R54",
+      "title": "Riskfolio-Lib",
+      "url": "https://github.com/dcajasn/Riskfolio-Lib",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    },
+    {
+      "id": "R55",
+      "title": "PyPortfolioOpt 官方文档",
+      "url": "https://pyportfolioopt.readthedocs.io/en/latest/GeneralEfficientFrontier.html",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    },
+    {
+      "id": "R56",
+      "title": "Riskfolio-Lib 文档",
+      "url": "https://riskfolio-lib.readthedocs.io/en/latest/",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "official_document_or_primary_project_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    },
+    {
+      "id": "R57",
+      "title": "RiskManager",
+      "url": "https://github.com/vnpy/vnpy_riskmanager",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    },
+    {
+      "id": "R58",
+      "title": "Backtrader",
+      "url": "https://github.com/mementum/backtrader",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    },
+    {
+      "id": "R59",
+      "title": "vectorbt",
+      "url": "https://github.com/polakowo/vectorbt",
+      "referenced_by": [
+        "MODULES_AND_ALTERNATIVES.md"
+      ],
+      "checked_at": "2026-10-04",
+      "evidence": "primary_repository_read",
+      "boundary": "Documentation reviewed; runtime, account access and financial performance not verified."
+    }
+  ],
+  "limitations": [
+    "未运行任何交易框架或策略",
+    "未访问付费数据账号或券商账户",
+    "价格与权限为文档快照，采购前以实际账号验证",
+    "展示 QA 不验证投资收益"
+  ],
+  "last_design_update": "2026-10-05"
+}

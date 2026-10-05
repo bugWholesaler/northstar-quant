@@ -1,0 +1,62 @@
+{
+  "checked_at": "2026-10-05",
+  "scope": "HTML structure and presentation only; no trading implementation or backtest executed",
+  "defaultPanel": "design",
+  "desktop": {
+    "width": 1440,
+    "scrollWidth": 1440,
+    "panels": 6,
+    "sections": 63,
+    "duplicateIds": [],
+    "brokenAnchors": []
+  },
+  "mobile": {
+    "width": 390,
+    "scrollWidth": 390
+  },
+  "mobileModules": {
+    "width": 390,
+    "scrollWidth": 390
+  },
+  "mobileDaily": {
+    "width": 390,
+    "scrollWidth": 390
+  },
+  "search": {
+    "visible": 1,
+    "empty": false
+  },
+  "alphaSearch": 6,
+  "modulesSearch": 2,
+  "dailySearch": 2,
+  "hasG39": true,
+  "hasPaperRunner": true,
+  "hasDailyRun": true,
+  "print": [
+    {
+      "name": "design",
+      "display": "block"
+    },
+    {
+      "name": "daily",
+      "display": "block"
+    },
+    {
+      "name": "plan",
+      "display": "block"
+    },
+    {
+      "name": "modules",
+      "display": "block"
+    },
+    {
+      "name": "tasks",
+      "display": "block"
+    },
+    {
+      "name": "research",
+      "display": "block"
+    }
+  ],
+  "errors": []
+}

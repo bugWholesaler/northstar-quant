@@ -1,0 +1,2537 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="A 股个人量化最小系统的实施计划、调研依据与 agent 任务包"><title>A 股个人量化系统实现计划</title><style>
+:root{--bg:#f5f5ef;--ink:#1c302e;--muted:#64716c;--green:#146450;--line:#dce3da;--card:#fff;--soft:#e8f0e7;--gold:#976f28}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:26px}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.9 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+[hidden]{display:none!important}a{color:var(--green);text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:#123a2d}
+button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #ba924a;outline-offset:3px}
+.layout{max-width:1560px;margin:auto;padding:32px 38px 70px;display:grid;grid-template-columns:248px minmax(0,1fr);gap:52px}
+aside{position:sticky;top:28px;height:calc(100vh - 56px);overflow:auto;padding-right:8px}
+.brand{font:600 13px/1.5 ui-monospace,monospace;color:var(--green);letter-spacing:1px;margin:8px 0 22px}.brand small{display:block;font:12px/1.7 sans-serif;color:var(--muted);letter-spacing:0;margin-top:6px}
+.tabs{display:grid;gap:6px;margin-bottom:18px}.tabs button{border:1px solid var(--line);background:#fff;border-radius:7px;padding:9px 12px;text-align:left;color:var(--muted);font-size:13px}
+.tabs button[aria-selected=true]{background:var(--green);color:white;border-color:var(--green)}
+.search{width:100%;border:1px solid var(--line);border-radius:7px;padding:8px 10px;background:white;margin-bottom:14px;font-size:13px;color:var(--ink)}
+nav{display:grid;gap:4px}nav a{text-decoration:none;font-size:12px;line-height:1.6;padding:7px 10px;color:var(--muted);border-left:2px solid transparent}
+nav a:hover,nav a.active{background:var(--soft);border-left-color:var(--green);color:var(--green)}
+.side-footer{font-size:11px;color:var(--muted);border-top:1px solid var(--line);margin-top:22px;padding-top:16px}.plain{border:1px solid var(--line);background:#fff;color:var(--green);border-radius:6px;padding:6px 13px;margin-top:12px}
+main{min-width:0;max-width:1120px}.hero{padding:22px 0 25px;border-bottom:1px solid var(--line);margin-bottom:25px}.eyebrow{font:12px ui-monospace,monospace;letter-spacing:1px;color:var(--green);margin-bottom:20px}
+h1{font-size:clamp(30px,3.3vw,47px);line-height:1.35;letter-spacing:-1px;margin:0 0 17px}.subtitle{font-size:17px;color:var(--muted);max-width:850px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}.chip{font-size:12px;border:1px solid var(--line);background:#fff;border-radius:30px;padding:4px 11px}.chip.amber{background:#fcf2de;color:#795d26}
+.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:25px 0 12px}.summary div{padding:17px 19px;border:1px solid var(--line);border-radius:9px;background:#fff}.summary b{font-size:13px;color:var(--green)}.summary p{font-size:13px;color:var(--muted);margin:7px 0 0}
+h2{font-size:26px;line-height:1.45;margin:0 0 22px}h3{font-size:19px;line-height:1.6;margin:28px 0 13px}p{margin:0 0 16px}strong{font-weight:650}
+.doc-section{padding:34px 0 25px;border-bottom:1px solid var(--line)}.intro{font-size:14px;color:var(--muted);padding:0 0 20px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff;margin:19px 0 24px}table{width:100%;border-collapse:collapse;font-size:13px;line-height:1.85;min-width:650px}
+th,td{padding:13px 15px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{background:var(--soft);color:#365247;font-weight:600}tr:last-child td{border-bottom:0}td:first-child{min-width:125px}tbody tr:hover{background:#fafcf8}
+pre{max-width:100%;overflow:auto;white-space:pre;background:#183a32;color:#eef4e9;border-radius:9px;padding:20px 22px;font:12.5px/1.85 ui-monospace,SFMono-Regular,Consolas,monospace;margin:18px 0 23px}
+code{font:12.5px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;background:#e8ece4;border-radius:3px;padding:2px 4px;overflow-wrap:anywhere}pre code{background:none;padding:0;overflow-wrap:normal}
+ul,ol{padding-left:25px;margin:14px 0 22px}li{padding-left:2px;margin:7px 0}blockquote{margin:18px 0;border-left:3px solid var(--green);background:var(--soft);padding:18px 22px;border-radius:0 8px 8px 0}blockquote p:last-child{margin-bottom:0}
+.architecture{padding:22px;border:1px solid var(--line);border-radius:9px;background:white;margin:20px 0}.arch-step{padding:13px 16px;background:var(--soft);border:1px solid #d6e2d4;border-radius:7px;text-align:center}.architecture small{display:block;color:var(--muted);font-size:11px;font-weight:400}.architecture b{font-size:14px}.arch-arrow{text-align:center;color:var(--green);line-height:1.6;font-size:18px}.arch-branches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.arch-branches>div{border:1px solid var(--line);border-radius:7px;text-align:center;padding:12px 7px}.architecture p{font-size:12px;color:var(--muted);margin:16px 0 0;text-align:center}
+@media(max-width:700px){.architecture{padding:13px}.architecture b{font-size:12px}.arch-branches{grid-template-columns:1fr;gap:6px}.arch-branches>div{padding:7px}.arch-step{padding:11px 7px}}
+footer{padding:25px 0;color:var(--muted);font-size:12px}.sources{font-size:12px}.sources span{display:block;color:var(--muted);font-size:11px}.sources b{font:11px ui-monospace,monospace}details{margin:22px 0;border:1px solid var(--line);padding:14px 18px;border-radius:8px;background:#fff}summary{cursor:pointer;color:var(--green);font-weight:600}
+.empty{padding:25px;border:1px dashed var(--line);color:var(--muted)}
+@media(max-width:1000px){.layout{grid-template-columns:210px minmax(0,1fr);gap:28px;padding:22px}.summary{grid-template-columns:1fr}.summary div{padding:12px 16px}.summary p{margin-top:3px}}
+@media(max-width:700px){.layout{display:block;padding:18px}aside{position:static;height:auto;overflow:visible;padding:0}.brand{margin:0 0 13px}.brand small{display:none}.tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.tabs button{text-align:center;padding:8px 3px;font-size:12px}nav{display:none!important}.side-footer{display:none}.search{margin-bottom:5px}.hero{padding-top:22px}h1{font-size:31px}h2{font-size:23px}body{font-size:14px;line-height:1.85}.summary{gap:8px}.doc-section{padding-top:28px}pre{font-size:11px;padding:15px}.table-wrap{margin-left:0;margin-right:0}}
+@media print{body{background:white;font-size:11px}aside,.hero .summary,.search,.plain{display:none!important}.layout{display:block;padding:0;max-width:none}main{max-width:none}.panel[hidden],section[hidden],details{display:block!important}h1{font-size:28px}h2{font-size:21px}.panel{break-before:page}.panel:first-of-type{break-before:auto}.table-wrap{overflow:visible}table{min-width:0;font-size:10px}th,td{padding:6px 8px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#eef1ec;color:#183a32;font-size:9px}h2,h3{break-after:avoid}.doc-section{padding-top:24px}tr{break-inside:avoid}a{color:inherit}.hero{margin-bottom:18px}}
+</style></head><body><div class="layout"><aside><div class="brand">A-SHARE / SYSTEM PLAN<small>2026-10-05 · 本地离线文档</small></div><div class="tabs" role="tablist" aria-label="文档类型"><button role="tab" data-tab="design" aria-selected="true">首版设计</button><button role="tab" data-tab="daily" aria-selected="false">每日操作</button><button role="tab" data-tab="plan" aria-selected="false">详细规格</button><button role="tab" data-tab="modules" aria-selected="false">模块与备选</button><button role="tab" data-tab="tasks" aria-selected="false">Agent 任务包</button><button role="tab" data-tab="research" aria-selected="false">调研依据</button></div><input class="search" type="search" aria-label="搜索当前文档" placeholder="搜索当前文档关键词"><nav data-nav="design" aria-label="首版设计章节" ><a href="#design-1">1 执行入口和文档关系</a><a href="#design-2">2 已确定范围和默认选择</a><a href="#design-3">3 用户每天得到什么</a><a href="#design-4">4 模块职责与输入输出</a><a href="#design-5">5 接口和数据规则</a><a href="#design-6">6 策略成交与账户时序</a><a href="#design-7">7 持续模拟与人工执行</a><a href="#design-8">8 风控与可操作状态</a><a href="#design-9">9 日常入口和失败语义</a><a href="#design-10">10 验收里程碑与交接证据</a></nav><nav data-nav="daily" aria-label="每日操作章节" hidden><a href="#daily-1">1 第一次使用前完成一次设置</a><a href="#daily-2">2 一天中系统和用户分别做什么</a><a href="#daily-3">3 普通模拟日的最短操作</a><a href="#daily-4">4 月末与下一交易日怎么衔接</a><a href="#daily-5">5 人工执行日的操作清单</a><a href="#daily-6">6 无交易日和非交易日怎么做</a><a href="#daily-7">7 异常时具体怎么做</a><a href="#daily-8">8 日报应该怎样呈现</a><a href="#daily-9">9 用户流程的验收</a></nav><nav data-nav="plan" aria-label="详细规格章节" hidden><a href="#plan-1">1 首版完成后的使用体验</a><a href="#plan-2">2 首版范围与明确延后项</a><a href="#plan-3">3 技术选型和依赖方向</a><a href="#plan-4">4 模块边界和稳定契约</a><a href="#plan-5">5 数据库与数据来源</a><a href="#plan-6">6 策略和组合的首版规格</a><a href="#plan-7">7 回测设计和必须验证的引擎行为</a><a href="#plan-8">8 账本和公司行动</a><a href="#plan-9">9 人工执行也是完整执行系统</a><a href="#plan-10">10 风控和暂停恢复</a><a href="#plan-11">11 交易规则和实际使用前置条件</a><a href="#plan-12">12 Harness 比较和可替换方式</a><a href="#plan-13">13 实验纪律和报告规格</a><a href="#plan-14">14 运维和恢复</a><a href="#plan-15">15 实施顺序与完成标准</a><a href="#plan-16">16 从哪里开工</a></nav><nav data-nav="modules" aria-label="模块与备选章节" hidden><a href="#modules-1">1 模拟盘可以怎样做</a><a href="#modules-2">2 系统分成哪些模块</a><a href="#modules-3">3 数据供应商的备选</a><a href="#modules-4">4 数据库和存储的备选</a><a href="#modules-5">5 策略和组合方法的备选</a><a href="#modules-6">6 风控的备选与共同底线</a><a href="#modules-7">7 回测执行和 harness 的备选</a><a href="#modules-8">8 怎样实现兼容而不增加首版负担</a></nav><nav data-nav="tasks" aria-label="Agent 任务包章节" hidden><a href="#tasks-1">1 可直接交给执行 agent 的提示词</a><a href="#tasks-2">2 任务依赖和交付节奏</a><a href="#tasks-3">3 分项任务</a><a href="#tasks-4">4 必须纳入的验收案例</a><a href="#tasks-5">5 每个任务的完成报告模板</a></nav><nav data-nav="research" aria-label="调研依据章节" hidden><a href="#research-1">1 相对原调研补充了什么</a><a href="#research-2">2 框架比较</a><a href="#research-3">3 读源码后需要写入验收的事项</a><a href="#research-4">4 数据调研的新结论</a><a href="#research-5">5 为什么是 Parquet DuckDB SQLite</a><a href="#research-6">6 Harness 如何进一步比较</a><a href="#research-7">7 研究报告怎样为策略提供依据</a><a href="#research-8">8 交易接入的后续路线</a><a href="#research-9">9 尚待实际执行核验</a></nav><div class="side-footer">已确认：ETF + 个股<br>执行：人工清单与成交导入<br>Harness：继续比较后选择<br><button class="plain" id="print">打印全部文档</button></div></aside><main><header class="hero"><div class="eyebrow">RESEARCH → IMPLEMENTATION</div><h1>A 股个人量化系统<br>首版设计与每日使用</h1><p class="subtitle">从可复现的数据和策略，到受约束的回测、人工执行、账本和对账。为后续更换数据商、研究工具与策略保留清晰接口。</p><div class="chips"><span class="chip">ETF 与个股</span><span class="chip">日线研究 · 月度调仓示例</span><span class="chip">本地模块化单体</span><span class="chip amber">实施状态：尚未开始</span></div><div class="summary"><div><b>首版闭环</b><p>数据 → 策略 → 回测 → 风控 → 清单 → 成交 → 对账 → 报告。</p></div><div><b>直接交接</b><p>T00–T10 任务、39 个验收案例、逐项完成证据和明确的未决条件。</p></div><div><b>选型依据</b><p>官方文档与固定版本源码；研究结论、设计判断和未实测项分别标注。</p></div></div></header><p id="empty" class="empty" hidden>当前文档没有匹配章节，可切换文档或更换关键词。</p><article class="panel" data-panel="design" ><section id="design-0" class="intro">
+<p>设计版本：v1.0。设计定稿日期：2026-10-05，时区 Asia/Shanghai。用途：交给执行 agent 实现。状态：设计完成，交易系统尚未实现。本文件与关联规格构成首版设计包，不包含已验证的投资收益。</p>
+<p>首版目标是一个可在本地运行的完整闭环：数据更新、ETF 与个股策略、受约束的历史回测、持续模拟盘、人工交易清单、成交导入、账本与对账、风险检查、日报和备份。用户具有专业 Python 能力，希望组件可替换并适合逐步学习。</p>
+</section><section id="design-1" class="doc-section"><h2>1 执行入口和文档关系</h2>
+<p>执行 agent 从本文件开始，不需要读取此前聊天。先做 T00 依赖与数据试验、T01 契约，再按任务依赖实现；未得到真实账号或风险预算也应完成可独立运行的部分。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="#daily" data-panel-link="daily">每日操作手册</a></td>
+<td>完成后用户每天具体怎么用，自动与人工各做什么，异常怎么处理</td>
+</tr>
+<tr>
+<td><a href="#plan" data-panel-link="plan">详细实现规格</a></td>
+<td>数据表、时间语义、策略、回测、账本、订单、风险和扩展边界</td>
+</tr>
+<tr>
+<td><a href="#modules" data-panel-link="modules">模块与备选</a></td>
+<td>关键 Python 文件、模拟盘细节、数据库/策略/风控等替换方案</td>
+</tr>
+<tr>
+<td><a href="#tasks" data-panel-link="tasks">Agent 任务与验收</a></td>
+<td>T00–T10 任务、依赖及逐项验收案例</td>
+</tr>
+<tr>
+<td><a href="#research" data-panel-link="research">调研依据</a></td>
+<td>已核实事实、源码发现和未验证事项</td>
+</tr>
+<tr>
+<td><a href="docs/research/sources.json">来源索引</a></td>
+<td>原始官方文档、GitHub 与研究链接</td>
+</tr>
+</tbody></table></div>
+<p>规格冲突时：本文件的首版决策及每日操作手册中的日常流程优先于旧版描述；具体数据字段与技术细节参考详细规格；备选表不意味着首版全部实现。新用户指示优先，安全与工具权限仍按执行环境要求处理。选型变更写 ADR，说明原因及兼容测试，不隐式改变交易或评估语义。</p>
+</section><section id="design-2" class="doc-section"><h2>2 已确定范围和默认选择</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>首版决策</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>标的</td>
+<td>境内股票 ETF、沪深主板普通 A 股；首版不新增其他板块/资产的买入支持</td>
+</tr>
+<tr>
+<td>频率</td>
+<td>日线研究；示例策略月度调仓；每日更新数据和账户状态</td>
+</tr>
+<tr>
+<td>初期运行</td>
+<td>本地持续模拟盘，使用真实新数据及虚拟资金；无凭据时先完成合成 demo</td>
+</tr>
+<tr>
+<td>真实执行</td>
+<td>用户在券商软件手工下单，系统生成清单并导入券商记录；不做自动实盘</td>
+</tr>
+<tr>
+<td>数据</td>
+<td>Tushare 为第一适配器；规范 CSV 为必备离线入口</td>
+</tr>
+<tr>
+<td>存储</td>
+<td>不可变 Parquet + DuckDB 查询；SQLite 事务账本，研究/paper/manual 分离</td>
+</tr>
+<tr>
+<td>回测</td>
+<td>优先 RQAlpha，经 T00 确认安装、许可及行为；适配失败有明确替代评估</td>
+</tr>
+<tr>
+<td>策略</td>
+<td>被动基准、ETF 120 日趋势前二、个股流动性过滤后 60 日低波动前五</td>
+</tr>
+<tr>
+<td>组合</td>
+<td>两个策略共享一个账户的现金与限制，统一聚合后规划订单</td>
+</tr>
+<tr>
+<td>风控</td>
+<td>数据、组合、订单、运行与账户四类检查；配置化阈值，支持持久暂停</td>
+</tr>
+<tr>
+<td>日常入口</td>
+<td>一个 ashare CLI；OS 调度器仅调用相同入口，手工和定时不得有两套逻辑</td>
+</tr>
+<tr>
+<td>报告</td>
+<td>本地 HTML + JSON/CSV，最先显示状态、数据日期和用户下一步动作</td>
+</tr>
+<tr>
+<td>Harness</td>
+<td>首版为确定性实验运行与记录；AI harness 保留接口，暂不选定</td>
+</tr>
+<tr>
+<td>运行环境</td>
+<td>Mac 优先，Linux 可迁移；不因当前首版先准备 Windows 交易机</td>
+</tr>
+</tbody></table></div>
+<p>纸面账户可使用虚拟 20 万元、ETF 40%/股票 40%/现金 20% 的演示配置。它不代表个人实际风险预算。manual 模式不得自动继承这些数值。</p>
+<p>首版策略是工程与研究基线，未证明有效；系统验收通过与策略值得投入资金分别验收。数据账号、券商格式、费率、初始账户、个人风控参数及适用报告流程，在相应阶段落实，不凭空补值。</p>
+</section><section id="design-3" class="doc-section"><h2>3 用户每天得到什么</h2>
+<p>系统提供一个固定入口 report/latest.html，并保留每个交易日和运行版本的历史报告。用户无需逐个执行几十个脚本。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>用户动作</th>
+<th>系统动作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>模拟盘普通日</td>
+<td>晚上看日报；状态正常且无待办即可结束</td>
+<td>更新数据、结算此前模拟订单、更新估值/权益、对账、报告、备份</td>
+</tr>
+<tr>
+<td>模拟盘调仓周期</td>
+<td>查看新目标及订单原因；默认规则已登记则由模拟器处理后续成交</td>
+<td>月末盘后形成次日起生效的目标，按日期推进，保留部分成交和偏差</td>
+</tr>
+<tr>
+<td>人工交易普通日</td>
+<td>提供/核对账户记录，查看异常；无订单时不交易</td>
+<td>核对现金、持仓、外部资金与公司行动，更新报告</td>
+</tr>
+<tr>
+<td>人工交易执行日</td>
+<td>检查最新有效清单，执行前核对，手动下单并登记委托号，盘后导入记录</td>
+<td>生成差额订单、风控、导出、导入去重、三方对账</td>
+</tr>
+<tr>
+<td>异常日</td>
+<td>按报告定位问题；核对后显式恢复</td>
+<td>阻止新计划发布，继续允许读数据、导入、对账与诊断</td>
+</tr>
+</tbody></table></div>
+<p>正常日不会每天重新挑选最优参数，不会因净值涨跌自动换策略。非月末通常没有新策略目标，但未完成计划、公司行动、外部交易和风险事件仍需处理。具体时间和操作步骤见 <a href="#daily" data-panel-link="daily">每日操作手册</a>。</p>
+</section><section id="design-4" class="doc-section"><h2>4 模块职责与输入输出</h2>
+<pre><code class="language-text">数据供应商 / 规范 CSV
+    ↓ 原始行情、证券状态、公司行动
+采集 → 标准化 → 质量检查 → 冻结快照
+    ↓ Parquet 保存，DuckDB 查询
+时点受限的数据视图 → 策略 → 目标仓位
+                                    ↓
+已核对账户 → 组合额度 → 差额订单 → 风控
+                                    ↓
+                   历史回测 / 连续模拟 / 人工清单
+                                    ↓
+                       模拟或真实成交事件
+                                    ↓
+                       账本 → 对账 → 日报
+                                    ↓
+                          下一日账户状态
+</code></pre>
+<p>回测引擎按历史日期驱动这一流程。模拟和真实账户分别运行，禁止共用一份现金/持仓状态。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>标准输入 → 标准输出</th>
+<th>关键文件位置示意</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>domain / ports</td>
+<td>原始载荷 → 类型、事件和接口</td>
+<td>models.py、events.py、interfaces.py</td>
+</tr>
+<tr>
+<td>data</td>
+<td>数据请求 → 标准批次/快照/时点数据</td>
+<td>ingest.py、normalize.py、quality.py、snapshot.py、market_view.py</td>
+</tr>
+<tr>
+<td>adapters/data</td>
+<td>标准请求 → 供应商响应</td>
+<td>tushare_provider.py、csv_provider.py</td>
+</tr>
+<tr>
+<td>adapters/storage</td>
+<td>标准数据/事件 → 持久化结果</td>
+<td>parquet_store.py、duckdb_query.py、sqlite_store.py</td>
+</tr>
+<tr>
+<td>strategies</td>
+<td>可见数据/参数 → TargetPortfolio</td>
+<td>buy_hold.py、etf_trend.py、stock_lowvol.py</td>
+</tr>
+<tr>
+<td>portfolio</td>
+<td>目标/账户/规则 → OrderIntent[]</td>
+<td>allocator.py、planner.py、sizing.py</td>
+</tr>
+<tr>
+<td>risk</td>
+<td>数据/目标/订单/账户 → RiskDecision</td>
+<td>engine.py、rules.py、state.py</td>
+</tr>
+<tr>
+<td>adapters/backtest</td>
+<td>实验规格/快照 → 标准模拟事件</td>
+<td>rqalpha_engine.py、rqalpha_data.py、rqalpha_bridge.py</td>
+</tr>
+<tr>
+<td>execution</td>
+<td>计划/来源记录 → 执行事件/对账结果</td>
+<td>paper_runner.py、plan_service.py、order_state.py、reconcile.py</td>
+</tr>
+<tr>
+<td>adapters/execution</td>
+<td>标准意图 → 模拟回报或人工导出</td>
+<td>paper.py、manual_csv.py</td>
+</tr>
+<tr>
+<td>accounting</td>
+<td>事件 → 现金/持仓/权益/税费</td>
+<td>ledger.py、positions.py、fees.py、corporate_actions.py</td>
+</tr>
+<tr>
+<td>research / reporting</td>
+<td>实验与账户 → manifest/指标/页面</td>
+<td>runner.py、registry.py、metrics.py、daily_report.py</td>
+</tr>
+<tr>
+<td>ops / cli</td>
+<td>操作参数 → 幂等任务状态</td>
+<td>daily.py、locks.py、backup.py、main.py</td>
+</tr>
+</tbody></table></div>
+<p>这些是目录和文件设计，尚未实现。策略只依赖标准数据接口，不直接 import 数据供应商、引擎或券商 SDK；领域定义不反向依赖具体数据库。模块不是微服务，首版一个 Python 包足够。</p>
+</section><section id="design-5" class="doc-section"><h2>5 接口和数据规则</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>核心对象</th>
+<th>必须包含</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Instrument</td>
+<td>稳定内部 ID、市场、证券类型、币种、有效期、代码映射</td>
+</tr>
+<tr>
+<td>Snapshot</td>
+<td>ID、schema 版本、明确文件清单及 hash、范围、来源、质量结果</td>
+</tr>
+<tr>
+<td>TargetPortfolio</td>
+<td>策略版本、decision_at、trade_not_before、expires_at、snapshot_id、权重及原因</td>
+</tr>
+<tr>
+<td>OrderIntent</td>
+<td>账户、target/plan/intent ID、方向、数量、价格保护、有效日、依赖、风险结果</td>
+</tr>
+<tr>
+<td>ExecutionEvent</td>
+<td>稳定事件 ID、源委托/成交号、市场时间、接收时间、数量/价格/费用、来源批次</td>
+</tr>
+<tr>
+<td>AccountView</td>
+<td>总/可用/冻结现金、总/可卖/冻结持仓、权益与负债、时点、核对状态</td>
+</tr>
+<tr>
+<td>ExperimentSpec</td>
+<td>策略、代码/依赖、快照、资金、费率、市场规则、风险、成交模型、切分、seed</td>
+</tr>
+</tbody></table></div>
+<p>金额用 Decimal 计算并按明确精度持久化，现金舍入与证券 tick 分开；数量以股/份计。时间戳带时区，交易日按 Asia/Shanghai 日历。接口及数据都带 schema_version。</p>
+<p>行情标准表包括证券版本/代码映射、交易日历、未复权日线、复权因子、历史状态及涨跌停、公司行动、历史股票池和来源记录。账本包括计划、订单、成交、资金事件、公司行动事件、持仓批次、风险、导入批次、对账和作业状态。</p>
+<p>历史快照不可覆盖；清洗新版本与源修订产生新快照。信号只能看到决策时点已允许看到的数据；冻结不等于证明历史数据没有修订。历史回补的可用时间推定与真实首次观测必须区分。</p>
+<p>研究价格可做复权，成交与账本用未复权价格加真实公司行动，不重复计分红。缺 bar 必须区分停牌、未上市、退市、休市和源缺失；禁止无条件填充后当可成交行情。</p>
+<p>数据供应商失败时不静默换源；新增供应商或数据库先过相同契约测试。费用、时间、状态或单位变更必须使缓存失效。</p>
+</section><section id="design-6" class="doc-section"><h2>6 策略成交与账户时序</h2>
+<p>ETF 示例：预登记候选池；月末盘后，用当时可见的 120 个交易日收益选正收益前二，每只 paper 目标最多 20%，不足部分留现金。</p>
+<p>个股示例：历史沪深主板可投资范围，排除当时 ST/退市整理及上市不足 252 个交易日者；过去 20 日成交额中位数前 300 中，按 60 日收益波动从低到高取五只，每只 paper 目标最多 8%。历史包括后来退市的股票；不足窗口不得补未来数据。</p>
+<p>统一时序：</p>
+<ol>
+<li>D 日已完成的市场与账户事实先入账并核对，再在盘后形成新目标。</li>
+<li>新目标最早 D+1 生效，不能回头成交在 D 日。</li>
+<li>日线回测和 paper 使用登记的次日收盘附近价格代理；真实人工执行示例窗口为 14:50–14:56，二者不视为精确相同。</li>
+<li>执行数量从已知参考价与账户确定，未来成交价不能反向改变此前选股。</li>
+<li>买入预算不复用当天卖出资金；次日对账后再产生剩余买单。这是首版保守执行政策。</li>
+<li>日内订单仅当日有效；目标可在最多三个交易日的 paper 示例有效期内继续尝试。每次先终结/核对旧订单，再根据真实状态生成新 intent。</li>
+<li>期满、用户错过窗口或计划被替代时，旧订单不得直接复用；保留未完成原因。</li>
+</ol>
+<p>RQAlpha 的有效配置和代码行为都必须验证；1d 的 next_bar 参数不自动保证次日成交，默认股利税和退市处理不能直接当真实账户结果。具体固定版本来源和适配要求见详细实现规格。</p>
+</section><section id="design-7" class="doc-section"><h2>7 持续模拟与人工执行</h2>
+<p>模拟盘使用独立 paper 账户及数据到达记录。优先验证引擎检查点恢复；不支持可靠续跑时，重放已冻结逐日输入和订单，逐项比对历史事件前缀，仅追加新事件。既有事件不因后来数据修订或策略升级被覆盖。</p>
+<p>跨日顺序在事件层明确：根据交易日历解锁可卖数量、处理当日适用公司行动，再处理订单和成交，随后按时点估值。若外部信息晚到，按原事件时点重新核对相关计算，保留修订证据；有影响且未解释时阻断新计划。不能只按文件到达顺序生硬更新。</p>
+<p>人工清单输出 plan.json、plan.csv、plan.html。导出只代表 EXPORTED，手工提交后登记 SUBMITTED；未知是否提交用 UNKNOWN。撤单请求不是撤单成功，部分成交、晚到成交和费用必须处理。</p>
+<p>导入四类记录：委托、成交、资金流水、账户快照。先 preview 校验，按 batch 原子 apply；用符合券商编号作用域的业务键跨文件去重。没有稳定 ID 的歧义需明确处理，不能把两笔相同价格数量的成交误合并。</p>
+<p>成交入账、事件去重、账户投影处于同一数据库事务。对账比较订单/成交、现金流水、账户快照；来源事实优先，差异不能靠伪造交易凑平。真实账户需要初始现金/持仓/批次和待处理权益；缺失时标记未知并保守预留。</p>
+</section><section id="design-8" class="doc-section"><h2>8 风控与可操作状态</h2>
+<p>无论使用哪种策略、数据库或 harness，必须保留：资金与可卖约束、交易单位和价格合法性、过期/重复/未知订单阻断、关键数据完整性、账户核对。</p>
+<p>日报显示彼此独立的状态，不把“数据正常”写成“可以下单”：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>允许的关键状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>job_status</td>
+<td>SUCCESS、PARTIAL、WAITING_DATA、FAILED、NOOP_MARKET_CLOSED</td>
+</tr>
+<tr>
+<td>data_status</td>
+<td>READY、STALE、INCOMPLETE</td>
+</tr>
+<tr>
+<td>reconciliation</td>
+<td>MATCHED、PENDING、MISMATCH</td>
+</tr>
+<tr>
+<td>risk_state</td>
+<td>RUNNING、REVIEW、HALTED</td>
+</tr>
+<tr>
+<td>plan_state</td>
+<td>NONE、DRAFT、RISK_PASSED、EXPORTED、SUPERSEDED、EXPIRED</td>
+</tr>
+</tbody></table></div>
+<p>只有对应任务、数据、账户、风险与当日计划都满足要求，manual 计划才能输出“执行前检查通过”。它不是成交保证，执行前仍核对券商最新行情与账户。</p>
+<p>暂停跨重启保留。恢复须修复原因、核对账户与订单、更新数据、作废旧计划并记录操作人及原因。允许导入、读取和核对；禁止按坏数据盲目清仓。风险减少订单也要检查数量、价格与可卖，不获得绕过账本的特权。</p>
+</section><section id="design-9" class="doc-section"><h2>9 日常入口和失败语义</h2>
+<p>下面是待实现命令协议，当前不可运行。高层命令应调用已经定义的低层数据、计划、导入和对账功能，不产生第二套业务逻辑。</p>
+<pre><code class="language-sh">uv run ashare status --account paper
+uv run ashare daily run --account paper --date YYYY-MM-DD
+uv run ashare report daily --account paper --date YYYY-MM-DD
+
+uv run ashare status --account manual
+uv run ashare plan preflight --plan PLAN_ID
+uv run ashare plan export --plan PLAN_ID
+uv run ashare order register --intent INTENT_ID --broker-order-id BROKER_ID
+uv run ashare import preview --account manual --mapping configs/brokers/manual_csv.yaml --file FILE
+uv run ashare import apply --batch BATCH_ID
+uv run ashare reconcile --account manual --date YYYY-MM-DD
+uv run ashare daily run --account manual --date YYYY-MM-DD
+</code></pre>
+<p>daily run 先解析账户模式和交易日，拿锁并恢复未完成批次；获取当天输入，按事件顺序更新当前账户并核对，最后才生成未来目标和计划，再报告与备份。paper step 是同一编排在 paper 模式下的兼容入口，不能另做一套 daily 逻辑。</p>
+<p>状态输出必须写明截至哪一交易日。昨天成功的页面不能在今天任务缺失时继续显示“今天正常”。数据或交割单未齐返回 WAITING/PENDING，报告继续生成但无新的可执行计划；重试不能重复入账。作业运行中断用持久 checkpoint/批次登记恢复，不自动重发未知订单。</p>
+<p>休市日返回 NOOP_MARKET_CLOSED，允许核对、备份和研究。禁止把当前墙上日期当作交易所开市证据。启动有副作用的模拟/人工计划阶段前校验时间；不能把收盘后才出现的计划倒填为收盘前订单。</p>
+</section><section id="design-10" class="doc-section"><h2>10 验收里程碑与交接证据</h2>
+<ol>
+<li>M0：T00/T01 完成，环境、许可/能力边界、契约和最小引擎案例有记录。</li>
+<li>M1：无凭据的合成 demo，一条入口跑过数据、策略、风控、部分成交、账本、对账和恢复。</li>
+<li>M2：真实历史数据，ETF/个股策略和基准有完整运行证据、成本/延迟压力结果。</li>
+<li>M3：持续 paper，新数据逐日进入；连续运行与中途重启等价，用户按每日手册独立使用。</li>
+<li>M4：人工流程可用，券商导出映射、费率、账户与个人预算落实；用户明确启用具体版本。没有条件时可以完成前四阶段，M4 明确未验收。</li>
+</ol>
+<p>验收用例按 Agent 任务包执行，报告逐项写 PASS / FAIL / NOT_TESTED。自动交易、财报模型、AI harness、大规模分钟数据和复杂 UI 不属于首版。</p>
+<p>最终代码交付应包含：README 安装和最短启动、锁文件、配置模板、脱敏 fixtures、迁移脚本、全部验收命令与结果、运行报告、已知限制、数据字典、ADR 和恢复手册。不能仅交 notebook 或收益图。</p>
+<p>可直接发送给执行 agent：</p>
+<blockquote>
+<p>请读取 DESIGN.md，按 docs/AGENT_TASKS.md 实现首版，以 docs/DAILY_RUNBOOK.md 的用户流程验收。先完成 T00/T01，再打通离线 demo 和持续 paper，保留人工清单/导入/对账。默认方案按设计实现，备选只保留接口，不要首版全部安装。需要 token 或券商记录的部分明确记录待验收，同时完成独立工作。当前任务不授权自动下真实订单、采购数据或替用户决定实际风险预算。每阶段保存代码、数据版本、命令、输出和测试证据，不能把文档、合成数据或 README 示例当作投资效果验证。</p>
+</blockquote>
+</section></article><article class="panel" data-panel="daily" hidden><section id="daily-0" class="intro">
+<p>版本 v1.0，2026-10-05，Asia/Shanghai。本手册描述系统实现并通过验收后如何使用；目前命令和界面均为待实现规格。技术入口见 <a href="#design" data-panel-link="design">首版设计</a>。</p>
+<p>日常操作目标：普通模拟日只需打开日报检查状态；有人工交易计划时才增加执行操作。月度调仓是策略频率，数据、账本、风控与报告仍按交易日运行。首版不要求每天重新研究策略或搜索参数。</p>
+</section><section id="daily-1" class="doc-section"><h2>1 第一次使用前完成一次设置</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>一次性设置</th>
+<th>完成证据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>确认运行模式和账户</td>
+<td>默认 paper；paper 与 manual 名称、数据库和文件目录明显不同</td>
+</tr>
+<tr>
+<td>配置数据与时间</td>
+<td>凭据留本机；交易所日历、数据覆盖、Asia/Shanghai 时区通过检查</td>
+</tr>
+<tr>
+<td>初始化模拟账户</td>
+<td>例如虚拟 20 万元，只初始化一次；日后从上一日继续</td>
+</tr>
+<tr>
+<td>固定策略与评估规则</td>
+<td>确定候选范围、参数、月末规则、费用、成交模型及 paper 风控</td>
+</tr>
+<tr>
+<td>配置日常任务</td>
+<td>让 OS 调度器调用 daily/open/check 等已实现入口，机器在所需时段运行</td>
+</tr>
+<tr>
+<td>验证恢复与重复运行</td>
+<td>断开重启后账户一致，同一天重复运行不重复记账</td>
+</tr>
+<tr>
+<td>选择报告入口</td>
+<td>固定 latest.html，历史日报留存，状态显示有效日期</td>
+</tr>
+</tbody></table></div>
+<p>这里是计划中的设置，不是本次已经安装了定时任务。未来启用 manual 时另需实际账户、券商文件样例、真实费率、个人风险预算及券商确认的适用流程。实际启用不能仅把 paper 的名称改成 manual。</p>
+</section><section id="daily-2" class="doc-section"><h2>2 一天中系统和用户分别做什么</h2>
+<p>以下时间是当前低频设计的示例调度，可配置；是否开市由交易所日历决定。数据是否就绪按实际到达与质量判断，不因时钟到点就自动通过。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>时段</th>
+<th>系统工作</th>
+<th>模拟盘用户</th>
+<th>人工交易用户</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>当天首次启动或早间检查</td>
+<td>读取日历、任务遗漏、风险状态、昨日未结事项和当日有效计划</td>
+<td>正常时无需操作；异常按待办处理</td>
+<td>查看今日是否有有效订单，处理昨日未解释事项</td>
+</tr>
+<tr>
+<td>当日状态数据可用后，如 09:35</td>
+<td>刷新当日 ST/停牌/限制；检查到达时间；更新合法的权益/可卖状态</td>
+<td>自动完成；缺数据不得伪造早已检查</td>
+<td>有交易时查看限制，执行前还需核对最新券商状态</td>
+</tr>
+<tr>
+<td>已登记执行窗口，如 14:50–14:56</td>
+<td>核验当日计划、账号、现金/可卖、价格保护和状态</td>
+<td>不需要真实下单；按登记模式保存模拟输入</td>
+<td>完成 preflight，提交限价委托并登记委托号</td>
+</tr>
+<tr>
+<td>收盘后记录可得时</td>
+<td>接收/校验委托、成交、资金流水、账户快照</td>
+<td>模拟事件由系统生成；故障演练例外</td>
+<td>导出券商记录，preview 后 apply，检查未成交订单</td>
+</tr>
+<tr>
+<td>晚间完整数据可用时，如 21:30</td>
+<td>完成数据与账户结算/核对、未来计划、报告和备份</td>
+<td>打开日报，检查状态和下一日待办</td>
+<td>打开对账及日报，有差异先处理再考虑新单</td>
+</tr>
+</tbody></table></div>
+<p>Tushare 分红文档列出的更新时段是 20–21 点，ST 文档约 09:20 更新；因此日线已出现并不表示所有相关数据都齐备。这只是本设计采用上述示例时间的依据，实际仍需验收。<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=103">分红接口</a> · <a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=397">ST 接口</a></p>
+<p>日线 paper 的订单必须在成交日之前或登记的允许时刻已冻结。收盘 bar 到达后只是结算先前订单，不能临时根据当天高低点决定如何买卖。若当天状态只在晚间到达，可用于按规则判断模拟市场是否可成交，不能伪造盘中已采取的撤单动作。</p>
+</section><section id="daily-3" class="doc-section"><h2>3 普通模拟日的最短操作</h2>
+<p>正常配置调度后，你打开日报，按下面顺序查看：</p>
+<ol>
+<li>日期正确吗？显示的 latest 可能仍是昨日页面，必须查看“预期交易日”和“最新成功运行日”。</li>
+<li>数据齐全吗？关键行情、交易状态、分红等是否 READY。</li>
+<li>账户正常吗？模拟引擎与独立账本是否 MATCHED，有无未知事件。</li>
+<li>风险正常吗？RUNNING、REVIEW 还是 HALTED；有无需要处理的原因。</li>
+<li>今天发生了什么？成交、费用、股利、持仓变化和资产估值是否有解释。</li>
+<li>明天需要做什么？没有调仓及未结事项时明确显示“无需交易操作”。</li>
+</ol>
+<p>全部正常且无待办即可结束。无需每日手动导入虚拟成交，也无需重新从第一天跑一次策略搜索。如果未启用调度，手动执行同一高层入口：</p>
+<pre><code class="language-sh">uv run ashare daily run --account paper --date YYYY-MM-DD
+uv run ashare status --account paper
+uv run ashare report daily --account paper --date YYYY-MM-DD
+</code></pre>
+<p>这些命令待实现。daily run 必须幂等；如果结果是 WAITING_DATA 或 FAILED，不能因为命令结束就视为今日已完成。重复运行用于恢复，不重置资金或重新挑选昨天的参数。</p>
+</section><section id="daily-4" class="doc-section"><h2>4 月末与下一交易日怎么衔接</h2>
+<p>令 D 为当月最后一个交易日，D+1 和 D+2 表示后续交易日，不是自然日。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>日期</th>
+<th>实际顺序</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D 盘后</td>
+<td>先完成 D 的旧订单、权益、估值与对账，再运行月度策略，生成新目标和次日起有效的草案</td>
+</tr>
+<tr>
+<td>D+1 执行前</td>
+<td>结合最新账户和状态复核，过期或被替代的草案不得使用</td>
+</tr>
+<tr>
+<td>D+1</td>
+<td>paper 模拟既有订单；manual 由你提交通过检查的订单，记录部分成交或拒单</td>
+</tr>
+<tr>
+<td>D+1 盘后</td>
+<td>按真实/模拟成交更新账户，未成交状态核清，对账后再计算剩余目标</td>
+</tr>
+<tr>
+<td>D+2 及目标有效期内</td>
+<td>前一天卖出释放且已核对的资金可以支持后续买单；旧订单终态确认后才生成新 intent</td>
+</tr>
+<tr>
+<td>目标期满</td>
+<td>未完成部分失效并列出原因，不无限追价，等待新的显式决策</td>
+</tr>
+</tbody></table></div>
+<p>首版买单不使用当天卖出的资金，所以一次换仓可能分两天或更多天完成。这是可配置但需前后一致的工程政策。若改成当天卖出后接着买，必须同时改变模拟成交顺序、人工操作和验收，不能只改一个仓位公式。</p>
+<p>有计划并不表示今天一定成交；也可能因价格保护、资金、交易限制或未知状态而全部不执行。月末不在交易日时按日历定位实际 D；节假日不生成假交易。</p>
+</section><section id="daily-5" class="doc-section"><h2>5 人工执行日的操作清单</h2>
+<h3>5.1 打开计划并核对</h3>
+<p>确认模式为 manual、账户正确、有效交易日是今天、plan_id 是最新版本。检查标的代码/名称、买卖方向、当前/目标/可卖数量、价格保护、费用和剩余现金。只使用通过执行前检查的清单。</p>
+<p>最新账户证据包括持仓与现金；待成交委托也会占用资源。当天无交易仍应有带时点的账户/订单证据或人工确认记录，不能反复导入旧文件就假装今天核对通过。人工确认的证据等级要标明。</p>
+<h3>5.2 执行前检查并提交</h3>
+<pre><code class="language-sh">uv run ashare plan preflight --plan PLAN_ID
+uv run ashare plan export --plan PLAN_ID
+</code></pre>
+<p>在券商软件核对最新报价、可用资金、可卖数量与未成交委托。没有实时 API 时，由你记录检查时刻和参考值；系统不能显示“已自动实时验证”。</p>
+<p>按清单提交限价委托，登记对应 intent_id 和券商委托号。没有拿到委托号但可能已经点击提交的，记为 UNKNOWN 并查询券商，不再提交一个相同订单。</p>
+<pre><code class="language-sh">uv run ashare order register --intent INTENT_ID --broker-order-id BROKER_ID
+</code></pre>
+<p>数量、标的或价格保护之外的调整需要重新规划和检查，不直接篡改清单后当成原计划执行。你在券商软件进行的计划外交易仍需导入，记录 EXTERNAL 并重新核对账户。</p>
+<h3>5.3 收盘后导入与核对</h3>
+<p>按实际券商文件格式导出委托、成交、资金流水和持仓/现金快照，可逐类导入。先预览，确认错误行、重复记录和预计账户变化，再提交：</p>
+<pre><code class="language-sh">uv run ashare import preview --account manual --mapping configs/brokers/manual_csv.yaml --file FILE
+uv run ashare import apply --batch BATCH_ID
+uv run ashare reconcile --account manual --date YYYY-MM-DD
+uv run ashare daily run --account manual --date YYYY-MM-DD
+</code></pre>
+<p>看到“无新增成交”不能推断委托已撤销；仍需核对未成交订单。部分成交只按成交数量入账。费用和交割单晚到时保留 PENDING，次日补齐并调整，不能凭空填写零费用。</p>
+<p>检查现金、持仓、可卖和未完成订单差异。报告为 MATCHED 且没有未解释事项，才算该阶段完成；执行窗口过后不拿当天剩余旧清单在别的时间追单。</p>
+</section><section id="daily-6" class="doc-section"><h2>6 无交易日和非交易日怎么做</h2>
+<p>普通交易日没有调仓：系统照常更新数据、估值、权益、风险和备份；manual 用户仍核对账户变动。公司行动、计划外交易和未结订单可能产生待办，所以“没下单”不代表可以跳过账本。</p>
+<p>交易所休市日：不发出交易任务；可以补历史数据、查看报告、做备份恢复或研究。日报/状态显示 NOOP_MARKET_CLOSED，并注明最新有效行情日，不能误报数据延迟。</p>
+<p>周度工作：查看未结项、成本与未成交统计、数据修订、备份和运行遗漏。月度工作：审阅调仓理由、策略与基准表现、执行误差，并做恢复演练。研究新策略另开 research 运行，不直接覆盖正在使用的版本。</p>
+</section><section id="daily-7" class="doc-section"><h2>7 异常时具体怎么做</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>报告提示</th>
+<th>用户动作</th>
+<th>系统应做什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据不齐或过期</td>
+<td>等待重试，必要时检查账号权限和源服务</td>
+<td>显示缺哪张表/哪一天，阻断新计划；保存上次状态但标明陈旧</td>
+</tr>
+<tr>
+<td>今日任务没有运行</td>
+<td>检查机器休眠、调度和锁，恢复任务</td>
+<td>补数据和报告；未预先生成的订单不能追溯成交</td>
+</tr>
+<tr>
+<td>订单是否已提交不确定</td>
+<td>在券商查委托/成交并补登记</td>
+<td>保持 UNKNOWN，禁止重复或替代下单</td>
+</tr>
+<tr>
+<td>部分成交或撤单中</td>
+<td>查剩余委托状态，必要时手动撤单并导入确认</td>
+<td>正确保留已成交数量；撤单请求不当作成功</td>
+</tr>
+<tr>
+<td>现金或持仓不一致</td>
+<td>对照原始流水、费用、股利与外部交易</td>
+<td>列差异及证据，阻断新买单，不能自动凑平</td>
+</tr>
+<tr>
+<td>风控暂停</td>
+<td>看清触发原因，按登记政策核查</td>
+<td>跨重启保留暂停，支持读取、对账和受检查的风险处置</td>
+</tr>
+<tr>
+<td>错过执行窗口</td>
+<td>标记未执行，核查是否存在已提交单</td>
+<td>原订单失效；下一交易日重算，不能复用旧单</td>
+</tr>
+<tr>
+<td>数据/策略后来修订</td>
+<td>保留旧 paper 记录，新研究另开版本</td>
+<td>不覆盖旧成绩；若影响账户事实，生成审计修订并重新核对</td>
+</tr>
+<tr>
+<td>备份失败或磁盘不足</td>
+<td>释放/恢复存储并确认备份状态</td>
+<td>停止有风险的写入和新计划发布，保护现有事件</td>
+</tr>
+</tbody></table></div>
+<p>任何暂停的恢复顺序：修复原因 → 获取最新状态 → 对账 → 检查数据 → 作废旧计划 → 记录恢复原因 → 重新规划。重启、等待一天或直接修改数据库都不能作为恢复方式。</p>
+</section><section id="daily-8" class="doc-section"><h2>8 日报应该怎样呈现</h2>
+<p>首页先回答“现在需要你做什么”，然后再展示收益。至少包括：</p>
+<ul>
+<li>模式和账户：paper/manual，账户脱敏名称。</li>
+<li>有效日期：预期交易日、最新成功日、数据/券商文件到达时间。</li>
+<li>独立状态：任务、数据、对账、风险、计划和备份。</li>
+<li>账户：总资产、可用/冻结现金、持仓/可卖数量和应收权益。</li>
+<li>今日变化：成交、费用、分红、资金进出、未成交及未知订单。</li>
+<li>明日待办：计划编号、有效期、原因、需要人工完成的动作；无事则写明。</li>
+<li>表现：净值、回撤、基准、交易成本，注明是模拟还是实际。</li>
+<li>证据入口：数据版本、成交原件、运行日志、差异明细、备份编号。</li>
+</ul>
+<p>示意文字如下，金额和状态不是本次实际运行结果：</p>
+<pre><code class="language-text">账户：paper-demo
+预期交易日：D
+最新完成：D
+数据：READY    对账：MATCHED    风险：RUNNING
+今日新增目标：无
+有效待执行订单：0
+待人工处理事项：0
+下一步：无需交易操作，下一交易日继续自动运行
+</code></pre>
+<p>页面成功打开不等于系统健康。status 命令和日报都必须检查当前预期任务，不能让昨日成功页面掩盖今日程序没有启动。若配置外部通知，只有在用户选择渠道并授权后启用；首版至少有本地错误码、醒目状态和待办报告。</p>
+</section><section id="daily-9" class="doc-section"><h2>9 用户流程的验收</h2>
+<p>执行 agent 除技术用例外，还要演练：</p>
+<ol>
+<li>一个无调仓的正常交易日，用户能明确知道无需交易。</li>
+<li>月末 D 与 D+1、D+2，先结算旧事实再生成未来计划，无同日未来信息。</li>
+<li>当日数据延迟和交割单晚到，报告保持待确认，不发布新可执行计划。</li>
+<li>休市与错过任务，状态能区分正常无交易与运行失败。</li>
+<li>用户不知道订单是否提交、部分成交、费用晚到时，可按本手册恢复。</li>
+<li>从报告一路追到原始文件和版本，无需阅读源代码才能解释账户变化。</li>
+</ol>
+<p>这些演练是首版可用性的一部分。验收前不把“脚本能运行”当作“用户已经会每天使用”。</p>
+</section></article><article class="panel" data-panel="plan" hidden><section id="plan-0" class="intro">
+<p>初始调研日期：2026-10-04；首版设计于 2026-10-05 定稿。面向专业 Python 开发者，资金背景为 10–30 万元，非高频。本文件是待执行的工程规格；尚未安装交易框架、下载完整行情、运行策略或连接券商。执行入口为 <a href="#design" data-panel-link="design">DESIGN.md</a>，日常行为按 <a href="#daily" data-panel-link="daily">每日操作手册</a> 验收。</p>
+<p>建议搭建一个本地模块化单体：<strong>同一份策略和组合逻辑，连接版本化数据、成熟事件回测引擎、模拟账户及人工成交导入；订单、风险、账本和对账形成完整闭环。</strong> 首版同时支持境内股票 ETF 和沪深主板普通 A 股。扩展性主要来自稳定的数据和业务契约，而不是提前部署微服务。</p>
+<p>你已确认：ETF 和个股首版都要；先生成交易清单、人工执行并导入成交；harness 继续比较后决定。默认研究频率采用日线、月度调仓。下文仓位、窗口与风险阈值均为 paper 演示配置，不视为你已接受的投资方案。</p>
+<p>阅读顺序：先看 1–3 节了解范围与架构，再看 9–11 节的人工执行与风险；执行 agent 按 <a href="#tasks" data-panel-link="tasks">任务包</a> 开工。具体 Python 文件、持续模拟盘和可替换方案见 <a href="#modules" data-panel-link="modules">模块与备选</a>，详细选型证据见 <a href="#research" data-panel-link="research">补充调研</a>。</p>
+</section><section id="plan-1" class="doc-section"><h2>1 首版完成后的使用体验</h2>
+<p>在无数据账号、无券商账号的干净环境中，一条 demo 命令应能用明确标为合成的样本，走完：</p>
+<p><strong>导入数据 → 质量检查 → 冻结快照 → ETF 与个股信号 → 合并目标 → 历史回测 → 风控 → 交易清单 → 模拟部分成交 → 导入 → 对账 → 日报 → 备份恢复。</strong></p>
+<p>配置 Tushare 权限后，切换到真实历史数据，流程和策略代码不变。实际人工交易前，另完成券商费率、账户初始状态、风险预算及程序化交易报告要求的核实。没有这些信息仍可完成 demo、历史研究和持续模拟。</p>
+<p>首版必须交付四种明确区分的运行模式：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>数据与执行</th>
+<th>能证明什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>demo</td>
+<td>合成数据及故障场景，隔离的模拟账户</td>
+<td>工程流程和已定义的边界案例可以运行</td>
+</tr>
+<tr>
+<td>research</td>
+<td>冻结的真实历史数据，按历史日期回测</td>
+<td>历史研究可复现</td>
+</tr>
+<tr>
+<td>paper</td>
+<td>随现实日期取得新数据，虚拟资金与连续模拟账户</td>
+<td>未来数据到来时流程能持续运行；不等于真实成交验证</td>
+</tr>
+<tr>
+<td>manual</td>
+<td>实际账户快照、人工报单、券商回报导入</td>
+<td>真实持仓与现金可跟踪、可对账；不代表策略获利</td>
+</tr>
+</tbody></table></div>
+<p>验收中不能以 demo 代替真实数据验收，也不能以回测结束代替人工执行闭环。首版 paper 是本地日线模拟，不要求券商账号；按已冻结计划逐日模拟结算。状态恢复和历史事件不改写的要求见 <a href="#modules" data-panel-link="modules">模拟盘设计</a>。</p>
+</section><section id="plan-2" class="doc-section"><h2>2 首版范围与明确延后项</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>环节</th>
+<th>首版必须实现</th>
+<th>后续扩展</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>标的</td>
+<td>境内股票 ETF；沪深主板普通 A 股，买入时排除 ST、退市整理及上市不足 252 个交易日者</td>
+<td>创业板、科创板、北交所；跨境、债券、商品 ETF；可转债</td>
+</tr>
+<tr>
+<td>数据</td>
+<td>日线、交易日历、证券主表及代码映射、历史存续与 ST/停复牌、涨跌停价、复权因子、现金分红与送转</td>
+<td>PIT 财报、历史行业/指数权重、分钟及盘口</td>
+</tr>
+<tr>
+<td>研究</td>
+<td>ETF 趋势、个股低波动示例、基准、时间切分、全部实验记录</td>
+<td>多因子、ML、自动搜索</td>
+</tr>
+<tr>
+<td>组合</td>
+<td>单账户、两个策略额度、标的聚合、整手与费用后的现金约束</td>
+<td>多账户、复杂优化、风险模型</td>
+</tr>
+<tr>
+<td>回测</td>
+<td>RQAlpha 适配、显式信号延迟、真实单位、费用及公司行动、受限成交、独立审计账本</td>
+<td>其他引擎、分钟撮合</td>
+</tr>
+<tr>
+<td>执行</td>
+<td>交易计划、人工下单登记、CSV 导入、未成交和部分成交、计划外交易</td>
+<td>MiniQMT / xtquant、vn.py gateway</td>
+</tr>
+<tr>
+<td>风控</td>
+<td>数据、组合、订单、运行四层检查；暂停与恢复流程</td>
+<td>更细的穿透风险、压力情景</td>
+</tr>
+<tr>
+<td>运营</td>
+<td>定时任务、单写者锁、结构化日志、异常列表、每日 HTML、备份恢复</td>
+<td>通知服务、Web 控制台、多机部署</td>
+</tr>
+<tr>
+<td>harness</td>
+<td>配置驱动任务与标准实验产物，预留候选策略输入接口</td>
+<td>比较后接 Qlib、RD-Agent 或其他 agent</td>
+</tr>
+</tbody></table></div>
+<p><strong>“不允许新买入”与“可以忽略已有持仓”完全不同。</strong> 持仓之后被 ST、停牌或退市，仍必须进入估值、风险、账本及报告，不能从历史数据里删除。未支持的复杂公司行动会使相关研究运行失效并保留诊断；不能静默跳过后给出漂亮收益。</p>
+<p>ETF 首版只交易二级市场份额，不做申赎套利。代码前缀不能代替资产分类；范围白名单和日期有效的交易规则共同决定支持能力。</p>
+</section><section id="plan-3" class="doc-section"><h2>3 技术选型和依赖方向</h2>
+<p>建议栈：Python 3.11 起步验证、pandas / NumPy、PyArrow / Parquet、DuckDB、SQLite、Pydantic、Click、Jinja2、pytest，以及隔离在适配层的 RQAlpha。实施时锁定实际跑通的依赖版本，不按“最新版本”浮动安装；Qlib / RD-Agent 后续使用独立环境。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>部件</th>
+<th>建议</th>
+<th>原因与验收边界</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据商</td>
+<td>Tushare Pro 为首个适配器，RQData 为有预算时的替代候选</td>
+<td>Tushare 接口与权限可逐项核查；RQData 的 PIT 与 RQAlpha 配套值得询价。二者均未在你的账号实测</td>
+</tr>
+<tr>
+<td>历史分析存储</td>
+<td>不可变 Parquet + 每个研究进程自己的 DuckDB 查询连接</td>
+<td>容易审阅和迁移；不把共享可写 DuckDB 当交易数据库</td>
+</tr>
+<tr>
+<td>状态存储</td>
+<td>本地 SQLite，WAL，单个逻辑写者，版本化 SQL migration</td>
+<td>账户、订单与事件必须事务提交；多机或多写者出现后再迁移 PostgreSQL</td>
+</tr>
+<tr>
+<td>回测</td>
+<td>优先 RQAlpha，先做 2–3 人日集成试验</td>
+<td>复用 A 股账户与撮合模块；自有数据不能只替换 OHLC 就声称完整接通</td>
+</tr>
+<tr>
+<td>执行</td>
+<td>ManualCsvAdapter + PaperAdapter</td>
+<td>符合你已选方式，不依赖 Windows 或券商 SDK</td>
+</tr>
+<tr>
+<td>确定性工作流</td>
+<td>简单 CLI 顺序执行 + SQLite 运行登记 + 文件 manifest</td>
+<td>首版没有 ML 训练 DAG，不必引入大型调度器；这只是系统编排胶水</td>
+</tr>
+<tr>
+<td>报告</td>
+<td>静态 HTML + CSV / JSON</td>
+<td>可离线阅读、可 diff、可被其他 agent 读取</td>
+</tr>
+<tr>
+<td>开发与运行</td>
+<td>当前 Mac；长期任务后续可放 Linux</td>
+<td>数据和运行目录放本地磁盘，避免直接在同步盘/NAS 上操作账本</td>
+</tr>
+</tbody></table></div>
+<p>推荐的调用链：</p>
+<div class="architecture" role="img" aria-label="数据经过快照、策略、组合风控，进入回测、模拟或人工执行，最终汇入账本和对账报告"><div class="arch-step"><small>可替换数据源</small><b>Tushare / RQData / CSV</b></div><div class="arch-arrow">↓</div><div class="arch-step"><small>统一数据层</small><b>原始数据 → 质量门禁 → 冻结快照</b></div><div class="arch-arrow">↓</div><div class="arch-step"><small>策略和账户决策</small><b>策略 → 目标组合 → 资金分配 → 风控</b></div><div class="arch-arrow">↓</div><div class="arch-branches"><div><b>历史回测</b><small>RQAlphaAdapter</small></div><div><b>持续模拟</b><small>PaperAdapter</small></div><div><b>人工执行</b><small>ManualCsvAdapter</small></div></div><div class="arch-arrow">↓</div><div class="arch-step"><small>共同事实和核对</small><b>成交事件 → 账本 → 对账 → 报告与备份</b></div><p>Harness 通过标准实验规格和候选策略接入评估流程。</p></div>
+<p>策略不能 import Tushare、RQAlpha、xtquant 或 sqlite3，也不能直接读写交易账本。引擎 API 仅出现在引擎适配器中。策略读数据、输出目标权重；风险和执行决定目标能否实现。</p>
+<p>上述模块边界借鉴 RQAlpha 的可替换数据源及 Mod、vn.py 的订单/成交与 gateway 分离、Qlib 的配置和实验产物管理。具体的单机存储组合与人工工作流是本项目设计，并不是某个开源项目提供的现成一键方案。<a target="_blank" rel="noopener noreferrer" href="https://rqalpha.readthedocs.io/zh-cn/latest/development/data_source.html">RQAlpha 扩展接口</a> · <a target="_blank" rel="noopener noreferrer" href="https://github.com/vnpy/vnpy">vn.py</a> · <a target="_blank" rel="noopener noreferrer" href="https://qlib.readthedocs.io/en/latest/component/workflow.html">Qlib workflow</a></p>
+</section><section id="plan-4" class="doc-section"><h2>4 模块边界和稳定契约</h2>
+<p>建议用 Python Protocol 描述边界，用 Pydantic 校验跨模块载荷，用 JSON Schema 导出外部契约。内部可用 DataFrame/Arrow，但约定主键、类型、时区、单位和排序；不得只传无规格的任意 DataFrame。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>契约</th>
+<th>最小输入和输出</th>
+<th>必须保证</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DataProvider</td>
+<td>fetch(dataset, instruments, start, end, cursor) → RawBatch</td>
+<td>保留源字段、分页依据、请求参数、抓取时间、内容哈希；无静默换源</td>
+</tr>
+<tr>
+<td>MarketDataView</td>
+<td>bars / instruments / status / actions，绑定 snapshot 与 decision_at</td>
+<td>信号侧只返回当时允许见到的数据；禁止绕过时点过滤</td>
+</tr>
+<tr>
+<td>Strategy</td>
+<td>generate(context, data_view) → TargetPortfolio</td>
+<td>同输入同输出；输出目标而非订单，不持有券商状态</td>
+</tr>
+<tr>
+<td>Allocator</td>
+<td>各策略目标 + 配额 + 已核对账户 → 聚合目标</td>
+<td>同标的先合并再下单，账户总额度不因两个策略而重复使用</td>
+</tr>
+<tr>
+<td>Planner</td>
+<td>聚合目标 + PositionView + RuleSet + FeeSchedule → OrderIntent 列表</td>
+<td>只做差额、考虑冻结和未完成计划、整手、费用和价格上限</td>
+</tr>
+<tr>
+<td>RiskPolicy</td>
+<td>evaluate(candidate, context) → PASS / BLOCK / REVIEW + reasons</td>
+<td>不通过时不可导出可执行单；保留修改前后值及原因</td>
+</tr>
+<tr>
+<td>BacktestEngine</td>
+<td>ExperimentSpec + snapshot + 策略制品 → 标准运行产物</td>
+<td>引擎名称、版本和成交假设进入 run manifest</td>
+</tr>
+<tr>
+<td>ExecutionAdapter</td>
+<td>publish / import_events / reconcile_source</td>
+<td>publish 的语义由能力声明决定；人工 export 不等于已报单</td>
+</tr>
+<tr>
+<td>LedgerStore</td>
+<td>append_events + 原子更新投影</td>
+<td>重复事件不重复入账，可从事件重建账户</td>
+</tr>
+<tr>
+<td>ResearchHarness</td>
+<td>propose / evaluate → CandidateArtifact / RunResult</td>
+<td>使用公共评估器，不能改费率、风控、数据快照或偷看封存集</td>
+</tr>
+</tbody></table></div>
+<p>关键业务对象必须包含：</p>
+<ul>
+<li>Instrument：内部稳定 instrument_id、交易所 MIC、证券类型、币种；代码通过带有效期的映射表关联 vendor symbol 和 broker symbol，不仅保存六位字符串。</li>
+<li>Snapshot：snapshot_id、schema_version、每个表的文件清单与哈希、数据区间、供应商、转换版本、质量报告、时间语义。</li>
+<li>TargetPortfolio：strategy_id/version、decision_at、trade_not_before、expires_at、snapshot_id、权重和原因、建议现金比例；非调仓日返回 NO_REBALANCE，不能把空列表误作清仓。</li>
+<li>OrderIntent：intent_id、plan_id、账户、标的、方向、数量、限价保护、有效日、依赖条件、费用估计、risk_result_id。</li>
+<li>ExecutionEvent：event_id、账户、券商委托号/成交号、事件时间与接收时间、事件类型、数量、价格、费用、来源批次、关联 intent；未知关联不得自动猜测。</li>
+<li>AccountView：现金总额、可用现金、冻结现金、可取现金（如源提供）、总持仓、可卖数量、冻结数量、应收股利、数据截止时间与核对状态。</li>
+<li>ExperimentSpec：策略、数据快照、时间切分、本金、基准、规则与费率版本、撮合/滑点配置、seed、资源预算。</li>
+</ul>
+<p>金额计算使用 Decimal；持久化采用明确缩放的整数或十进制字符串，禁止依靠 SQLite REAL 做账户金额。内部计算可保留至百万分之一元，现金记账按券商分币规则舍入；价格另按股票/ETF tick 校验。数量是股/份的整数；行情成交量保留源精度后验证转换误差。</p>
+<p>所有业务时间用带时区的 timestamp；交易日用 Asia/Shanghai 日历，数据库可存 UTC 并保留 exchange_date。不能把周一至周五直接当交易日。</p>
+<p>配置和事件都带 schema_version。兼容升级只新增可选字段；删字段或变单位必须升大版本并提供迁移。读取未知大版本直接报错，不能猜。</p>
+</section><section id="plan-5" class="doc-section"><h2>5 数据库与数据来源</h2>
+<h3>5.1 三层数据与目录</h3>
+<pre><code class="language-text">runtime/                         # 示意名；实际路径通过配置指定，与源码分开，不提交 Git
+  raw/{provider}/{dataset}/{batch_id}/
+    response.*  request.json     # 原始响应与脱敏请求
+  lake/{dataset}/year=YYYY/part-{content_hash}.parquet
+  snapshots/{snapshot_id}/
+    manifest.json  quality.json
+  state/research.sqlite
+  state/paper.sqlite
+  state/manual.sqlite
+  runs/{run_id}/
+    manifest.json targets.parquet orders.parquet fills.parquet
+    ledger.parquet equity.parquet metrics.json report.html logs.jsonl
+  plans/{account}/{plan_id}/
+    plan.json plan.csv plan.html
+  imports/{account}/{batch_id}/
+    original.csv mapping.json validation.json
+  backups/{date}/
+</code></pre>
+<p>raw 只追加。清洗产生新文件；修订数据产生新快照，历史 run 固定引用旧快照。manifest 是文件清单，不得用 lake 下所有 parquet 的通配符查询，否则新旧版本会重复进入回测。先写临时文件、校验、原子发布 manifest，读者只能看到完整快照。</p>
+<p>快照只引用变化后的分区，不复制整个历史库。日线按数据集和年份分区，必要时再按月份或稳定桶拆分；不为每只股票每天建小文件。十年全市场日线是千万级行量估算，首版用单机列式存储合理；真实容量与耗时在 T02 基准测试记录。</p>
+<p>DuckDB 以进程内分析为主。每个研究进程直接查询同一组只读 Parquet，拥有自己的内存/临时 catalog；不让 ingestion 和多个 agent 并发写一个 .duckdb 文件。SQLite 由一个服务/持锁 CLI 串行提交账户变更。WAL 不能放在网络文件系统上。<a target="_blank" rel="noopener noreferrer" href="https://duckdb.org/docs/current/connect/concurrency">DuckDB 并发说明</a> · <a target="_blank" rel="noopener noreferrer" href="https://www.sqlite.org/wal.html">SQLite WAL</a></p>
+<h3>5.2 标准数据集</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>表</th>
+<th>主键或唯一约束</th>
+<th>核心字段与语义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>instrument_versions</td>
+<td>instrument_id, valid_from, revision_id</td>
+<td>名称、资产类别、市场/板块、上市/退市日、tick、lot、结算类型、有效区间及来源</td>
+</tr>
+<tr>
+<td>symbol_map</td>
+<td>provider, symbol, valid_from</td>
+<td>内部 ID 与外部代码映射；代码变更不能新建一份重复持仓</td>
+</tr>
+<tr>
+<td>calendar</td>
+<td>exchange, trade_date</td>
+<td>is_open、前后交易日、session、临时变更</td>
+</tr>
+<tr>
+<td>bars_daily</td>
+<td>instrument_id, trade_date，在快照内唯一</td>
+<td>未复权 OHLC、前收参考值、股/份成交量、人民币成交额、状态</td>
+</tr>
+<tr>
+<td>adjustment_factors</td>
+<td>instrument_id, trade_date</td>
+<td>股票和基金各自复权因子、算法/供应商版本；仅供研究价格构造</td>
+</tr>
+<tr>
+<td>trading_status</td>
+<td>instrument_id, effective_date, revision_id</td>
+<td>listed、ST、suspended、delisting_period、涨跌停价、状态的已知时间</td>
+</tr>
+<tr>
+<td>corporate_actions</td>
+<td>action_id, revision_id</td>
+<td>公告/实施/登记/除权/到账/新增股份可卖日期、每股现金与送转比例、方案状态</td>
+</tr>
+<tr>
+<td>universe_membership</td>
+<td>universe_id, instrument_id, valid_from, revision_id</td>
+<td>历史可投资范围及选入原因；每个决策日可重建</td>
+</tr>
+<tr>
+<td>provenance</td>
+<td>dataset, batch_id</td>
+<td>源接口、权限检查、抓取时间、内容哈希、转换版本、覆盖与失败记录</td>
+</tr>
+</tbody></table></div>
+<p>财务扩展表预留为 financial_observations：instrument_id、report_period、field、value、announced_at、revision_id、available_at。首版不下载财报、不计算质量/价值因子，避免把字段预留误做完整功能。</p>
+<p>SQLite 至少包括 schema_migrations、accounts、runs、plans、intents、order_events、fills、cash_events、corporate_action_events、position_lots、positions、cash_balances、risk_decisions、reconciliation_runs、reconciliation_items、import_batches、job_runs、artifacts。事件和相关投影须在同一事务内更新；所有账户表都带 account_id，研究和实际账户另有物理数据库隔离。</p>
+<h3>5.3 Tushare 首版采购和拉取清单</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>数据</th>
+<th>接口候选</th>
+<th>已核实的文档事实及需验收点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>日历、证券主表</td>
+<td>trade_cal、stock_basic、fund_basic / etf_basic</td>
+<td>股票需获取上市、退市及暂停上市等记录；ETF 分类与终止上市覆盖需样本确认</td>
+</tr>
+<tr>
+<td>股票行情</td>
+<td>daily、adj_factor</td>
+<td>分页、停牌无 bar、历史覆盖；不把缺 bar 自动填成交易日</td>
+</tr>
+<tr>
+<td>ETF 行情</td>
+<td>fund_daily、fund_adj</td>
+<td>fund_daily 文档要求至少 5,000 积分，vol 为手、amount 为千元；fund_adj 是独立基金因子</td>
+</tr>
+<tr>
+<td>历史股票与 ST</td>
+<td>bak_basic、stock_st，必要时 namechange 核对</td>
+<td>bak_basic 文档从 2016 年起；stock_st 支持按日期的历史列表，但早期不齐，且当日约 09:20 更新</td>
+</tr>
+<tr>
+<td>交易限制</td>
+<td>suspend_d、stk_limit、etf_limit</td>
+<td>每日证券限制；etf_limit 文档要求 2,000 积分，历史起点未保证，必须探测</td>
+</tr>
+<tr>
+<td>公司行动</td>
+<td>dividend、fund_div</td>
+<td>只采用实施方案，去重修订；税前现金值映射 cash_div_tax，不与税后字段混淆；拆分除息/到账/股份可卖日期</td>
+</tr>
+</tbody></table></div>
+<p>依据：<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=27">股票日线</a>、<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=127">ETF 日线</a>、<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=199">基金因子</a>、<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=262">历史股票列表</a>、<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=397">ST 列表</a>、<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=491">ETF 涨跌停</a>、<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=103">股票分红</a>、<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=120">基金分红</a>。</p>
+<p>这些接口名是实施调查清单，不是“已买到完整数据”的承诺。公共权限表列出 5,000 积分档约 500 元/年，且有独立付费接口；以账号实际权限和样本为准。首版不因预算有几千元就直接买全量分钟数据。<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=290">权限表</a></p>
+<p>先测 2 只 ETF + 20 只股票 + 一只历史退市股票 + 有分红送转的区间，覆盖两家交易所。再补齐所选研究期的历史主板全体证券，才能运行“从全市场筛选”的股票策略；不能拿抽样股票的结果冒充全市场回测。股票演示正式研究期建议从 2017 年开始，使用 2016 年作预热，并以状态/公司行动数据完整度决定最终起点。</p>
+<p>换源时建立 dataset-level 路由配置。必须保留供应商身份，做重叠区间对比并生成新 snapshot。禁止 API 失败时悄悄用 AKShare 补几行原始价格而继续沿用旧因子。RQData 可降低部分历史状态与财务工作的成本，但报价和授权需实际询问；其 PIT API 的 date 和 statements 参数仍要按实验时点使用。<a target="_blank" rel="noopener noreferrer" href="https://www.ricequant.com/doc/rqdata/python/stock-mod.html">RQData PIT</a></p>
+<h3>5.4 时间语义与质量门禁</h3>
+<p>区分 event_time（发生）、effective_time（生效）、published_at（公告）、observed_at（本系统首次取得）、available_at（评估器允许策略看见）。保留 available_at 的依据：源时间戳、保守规则或真实首次观测。</p>
+<p>历史回补的数据在 2026 年抓取，不代表 2017 年的策略都不可见，也不代表供应商能证明当时的原始版本。研究模式可以声明“按公开日推定可用”的历史假设；严格 paper 模式以实际到达时间控制。<strong>冻结快照保证可复现，不能单独证明不存在历史修订或未来信息。</strong> 财务、历史分类等缺少旧版本时，要降低证据等级。</p>
+<p>日线策略只读 D 日完成并验收后的数据；若没有明确发布时刻，盘后统一延迟到配置的决策时刻，如 21:30，且检测实际齐备情况。Tushare 分红接口文档写明 20–21 点更新，任务不能仅因日线已到齐就宣布全部数据可用。当日 ST 列表 09:20 更新不能在回测里假定 08:30 已知；盘前的 draft 和开盘后的最终检查必须区别。完整 bar 最早供下一交易日使用。</p>
+<p>发布快照前检查：</p>
+<ol>
+<li>分页完整、请求区间完整、主键无冲突、有效证券与日历覆盖有统计；接口返回满页不能视为全部下载完毕。</li>
+<li>OHLC 非负且区间合法；单位转换和成交额/成交量均价量级合理；字段改名、异常 NaN 直接失败。</li>
+<li>缺失分成休市、未上市、停牌、退市、源缺漏；只有估值允许带标记沿用旧价，信号窗口和撮合不得默默前向填充。</li>
+<li>因子跳变应能关联公司行动；涨跌停参考价不能无条件等于昨日未复权收盘价。</li>
+<li>关键状态缺失时不输出“可执行”计划；数据不齐只能产生带阻断原因的报告。</li>
+<li>同源重拉差异、跨源小样本差异都保留；source 优先级不可由策略自由改变。</li>
+</ol>
+</section><section id="plan-6" class="doc-section"><h2>6 策略和组合的首版规格</h2>
+<p>这两条是验证系统的研究假设，不是已经证实的赚钱策略。窗口和权重在第一次实验前登记；不要让执行 agent 自动搜索“最高 Sharpe”再把参数当默认值。</p>
+<h3>6.1 ETF 趋势示例</h3>
+<p>预先登记 3–5 只境内宽基股票 ETF 的白名单、类别与选定日期。只在其上市后且至少有 121 个有效收盘观察时使用。白名单按今天选出会有选择偏差，因此历史结果标为“固定清单的条件实验”，不声称复现当时全 ETF 市场选基效果。</p>
+<p>每月最后交易日盘后，用截至 D 的复权研究价格计算 120 个交易日总回报代理。正回报者按回报排序，取前 2 名；每只最多分配账户 20%，不足两只时余款留现金，全部不满足则该策略目标为现金。并列按内部 ID 稳定排序。</p>
+<p>复权序列的收益定义和供应商算法要在 manifest 中注明；这只是趋势信号，真实账户仍用未复权价格和公司行动记账。趋势研究背景见 <a target="_blank" rel="noopener noreferrer" href="https://www.aqr.com/Insights/Research/Journal-Article/Time-Series-Momentum">Time Series Momentum</a>，其研究对象并不直接验证本方案的 A 股 ETF 参数。</p>
+<h3>6.2 个股低波动示例</h3>
+<p>每月最后交易日盘后，从当日已上市至少 252 个交易日、非 ST、非退市整理的沪深主板普通 A 股中选候选，保留后来退市的证券历史。使用过去 20 个交易日人民币成交额中位数筛前 300 只，再以过去 60 个有效日收益标准差从低到高选 5 只，账户权重每只最多 8%，合计最多 40%。</p>
+<p>日收益用经过验证的复权研究序列；60 个收益至少需要 61 个价格。首版要求对应窗口覆盖所有预期交易日；停牌/缺数据导致不足者不新买入。并列按 ID 排序。不使用当前总市值、当前行业或当下指数成分去筛历史。20/60/252/300/5 均为待检验规格。</p>
+<p>低风险效应仅提供研究动机，例如 <a target="_blank" rel="noopener noreferrer" href="https://www.aqr.com/Insights/Research/Journal-Article/Betting-Against-Beta">Betting Against Beta</a>；低 beta、低波动和本项目长仓五股组合不是同一个策略。五只股票的集中风险会明确显示在报告里。</p>
+<h3>6.3 基准和账户合并</h3>
+<p>至少输出全现金、同一 ETF 清单固定权重、个股相同流动性股票池的等权研究组合，以及有可用数据的宽基收益参照。指数价格指数与含股息策略的口径不一致须注明；不要用一个忽略分红的指数画出“超额”。</p>
+<p>ETF/股票各 40% 是 paper 示例，预留 20% 现金。两者在同一账户聚合、统一风控与下单；分别记录策略归因，但实际账户账本只有一套。首版不做行业硬约束，避免当前行业污染历史；输出可解释的行业集中度需先有历史分类。ETF 与个股可能重叠，未做持仓穿透时报告“穿透暴露未知”，不能宣称充分分散。</p>
+<p>Planner 计算目标数量时使用决策时刻已知参考价，向下取整到买入单位，再按限价保护和费用重新检查现金。买不起一手就记录跳过与目标偏差，不能假设可以买碎股。可卖零股按证券规则处理。</p>
+<p>非调仓日继续更新估值、检查风控、导入及对账。目标没有变化不等于系统当天可以不运行。</p>
+</section><section id="plan-7" class="doc-section"><h2>7 回测设计和必须验证的引擎行为</h2>
+<h3>7.1 首版明确使用延迟到下一交易日的收盘代理</h3>
+<p>为配合日线数据和人工执行，首版研究主模型采用：D 日盘后形成不可变目标和数量草案，最早在 D+1 的日终事件提交预先生成的订单，以 D+1 收盘附近的受限成交代理撮合。人工示例执行窗口为 D+1 14:50–14:56，使用限价；这需要你届时有空，窗口可在上线前改为已登记的执行政策。</p>
+<p><strong>日收盘价不等于 14:50 的可成交价。</strong> 报告必须显示“日频成交代理”标签，并给出延后一个交易日、成本 2 倍/3 倍、价格不利偏移等压力结果。人工实盘记录真实执行时刻与价格，累计偏差后校准；若优势依赖几 bp 或窗口内精确成交，升级所选标的/调仓日分钟数据后再评价，不把日频结果当精确模拟。</p>
+<p>不使用 D+1 的收盘价重新挑股、排名或增加数量。D+1 的已知状态可以阻止交易；执行日 bar 的价格和成交量仅供模拟市场判断能否成交，不能反向送入 D 日决策。策略数据视图与撮合数据视图物理隔离。</p>
+<p>RQAlpha 当前源码会在 1d 模式把 next_bar 变为 current_bar。本设计通过“D 的计划存储，D+1 的执行回调加载”实现交易日延迟，不能只设置 next_bar。增加突变价格 fixture，断言最早成交日期严格晚于 decision_date。引擎若提前泄露 D+1 bar，验收失败。<a target="_blank" rel="noopener noreferrer" href="https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/rqalpha/mod/rqalpha_mod_sys_simulation/mod.py#L60">已核对源码</a></p>
+<h3>7.2 现金和换仓采取保守的首版政策</h3>
+<p>买入预算只用执行日前已核对的可用现金，扣掉冻结、费用和现金预留。首版不复用当天卖出产生的现金；卖出完成并在日终对账后，最早下一交易日生成剩余买入单。因此大幅换仓可能分两天完成，回测和人工计划必须使用相同政策。</p>
+<p>这是降低人工操作和日线内成交顺序歧义的工程限制，不是把卖出款当日不可用于买入的监管规则。后续支持“卖出成交回报后解锁买单”时，只扩展执行状态机，并用分钟或真实回报验证。</p>
+<p>未完成目标保留固定 target_id；下一日根据实际账户重算剩余差额。最多尝试 3 个交易日是 paper 示例，超时目标失效、生成偏差报告，不能无限追价。月度新目标到来时，要先处理旧计划状态并显式 supersede。</p>
+<h3>7.3 复用引擎但统一事实</h3>
+<p>实现 CanonicalRQAlphaDataSource，把证券属性、日历、bar、停牌/ST、分红送转、价格限制和可用区间全部映射到同一 snapshot。默认 bundle 可用作安装烟测，不能混入正式 run 的公司行动或日历。未实现接口显式 Unsupported，不能静默回退网络。</p>
+<p>引擎产生订单和成交，统一转为标准事件，进入独立 Ledger。RQAlpha 的账户供仿真与下单约束使用，独立账本负责审计；逐日比较两者的经济资产、现金、持仓。发现差异必须修正 adapter/成本模型，不得仅在最终图表修一条收益曲线。</p>
+<p>当前源码中股息税默认关闭、存在退市现金返还开关，并已有红利税和送转处理。这些是需要审阅与验证的复用点，不能推断默认即满足真实个人账户。<a target="_blank" rel="noopener noreferrer" href="https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/rqalpha/mod/rqalpha_mod_sys_accounts/position_model.py">账户实现</a></p>
+<p>最低要求包括：</p>
+<ul>
+<li>个股红利税启用并验证持有期及分批卖出；是否对 ETF 应用由资产类别决定。</li>
+<li>禁用“退市按最后市值自动拿回现金”的假设。退市持仓转不可交易资产，基准估值按零的保守政策、回收时另记现金事件；与引擎的差异需显式适配。</li>
+<li>现金分红不默认自动再投资。拆股/送转后的新增股份按真实可卖日解锁。</li>
+<li>市价类、限价类、撮合价、tick、费用与涨跌停都做契约测试。保留修改过的 Mod，尽量不 fork 核心。</li>
+<li>RQAlpha 授权包含商业用途限制，不能以 pyproject 里的 Apache 标签代替 LICENSE。个人投资用途如何适用，实施前确认；有障碍时按 T00 评估 Hikyuu 等替代引擎，业务契约不变。<a target="_blank" rel="noopener noreferrer" href="https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/LICENSE">许可证</a></li>
+</ul>
+<h3>7.4 成交限制和费用</h3>
+<p>日频不模拟排队优先级；在不利侧触及涨跌停时采取保守不成交政策，停牌/零量不成交。滑点后的价格不能突破订单限价、交易所价格限制或 bar 合法范围；无法满足就减少/拒绝成交，不制造 bar 外的理想成交。每日成交量参与上限与过去 20 日流动性检查都要有；前者是事后市场容量模拟，后者才是事前计划约束。不能用全天成交量证明收盘窗口存在同样流动性。</p>
+<p>费用表按日期、账户、资产类别和方向配置。包含佣金率、最低佣金、印花税、适用过户费/规费、费用包含关系、红利税及舍入规则。最低佣金按券商实际订单收费单位汇总，不能每次部分成交重复收一份；在最终交割单到达后做费用调整事件。</p>
+<p>股票印花税在 2023-08-28 有政策变化；红利税与持有期及卖出有关，不能在所有分红日直接统一扣 20%。ETF 的交易税费与股票分别建表。<a target="_blank" rel="noopener noreferrer" href="https://jiangsu.chinatax.gov.cn/art/2023/8/28/art_8349_432258.html">印花税公告</a> · <a target="_blank" rel="noopener noreferrer" href="https://www.chinatax.gov.cn/n810341/n810755/c1797427/content.html">股息红利税通知</a></p>
+<p>回测须输出“交易成本后净值”和“再计数据/运行固定支出的经济结果”。后者单独展示，避免固定订阅费用改变策略信号。没有实际券商费率时仅能标注情景费率，不得包装为真实账户净收益。</p>
+</section><section id="plan-8" class="doc-section"><h2>8 账本和公司行动</h2>
+<p>首版采用可重放的事件账本和明确的现金/证券投影，不必引入复杂会计平台。Event append、去重、现金/持仓更新必须原子提交；历史更正通过冲正/调整事件处理，不直接修改旧成交。</p>
+<p>统一事件包括：Deposit、Withdrawal、OrderRegistered、Fill、FeeAdjusted、DividendEntitled、DividendPaid、DividendTaxPaid、SplitOrBonus、SharesUnlocked、AssetWrittenDown、CashRecovery、ExternalTrade、Correction。每个事件有来源和证据。</p>
+<p>净资产计算为现金总额 + 可交易证券市值 + 不可交易资产估值 + 应收股利 − 已确认负债；冻结现金已经在现金总额中，不再额外相加。可用现金用于下单，不等于净资产。入金不能算策略收益，展示时间加权收益；资金使用者的实际回报可另报 XIRR。</p>
+<p>分红至少记录登记日持仓权益、除息日应收、到账日现金转换。用未复权交易价格记账；如果同时使用复权收益再把现金分红记一遍，会重复计收益。送转要调整数量和批次成本，配股、合并换股、清算等没有适配时阻断发布相关回测结果，实际账户进入人工处理状态。</p>
+<p>手算验收例子，均为合成数据与明确情景，不是市场报价：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>情景</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>初始 10,000 元；买 200 股 × 10 元，佣金 5 元</td>
+<td>现金 7,995；持仓 200；本日可卖新增数量 0</td>
+</tr>
+<tr>
+<td>下一交易日卖 100 股 × 11 元，佣金 5 元、示例卖出税 0.55 元，其他费用假设为 0</td>
+<td>现金 9,089.45；持仓 100；以 11 元估值净资产 10,189.45</td>
+</tr>
+<tr>
+<td>同一成交 CSV 导入两遍</td>
+<td>第二次新增事件 0；现金持仓完全不变</td>
+</tr>
+<tr>
+<td>100 股由 10 元除息到 9.8 元，每股现金 0.2 元，其他因素忽略</td>
+<td>证券价值 980 + 应收 20；到账仅应收转现金，资产不平白增加</td>
+</tr>
+<tr>
+<td>同一订单分成三笔成交</td>
+<td>同一订单费用按规则累积，不能机械收取三次最低佣金</td>
+</tr>
+<tr>
+<td>停牌中出现风险阈值</td>
+<td>保留持仓和估值标记，产生待处置风险；不能虚构卖出</td>
+</tr>
+</tbody></table></div>
+<p>真实持仓初始化要导入基准日完整现金与持仓，并确认尚未结算的成交、分红权益和持仓批次。拿不到历史买入日期时，红利税预测标为未知并采用保守预留；实际交割单是最终账务依据。不能为了启动方便假设已有股票都是当天买的。</p>
+</section><section id="plan-9" class="doc-section"><h2>9 人工执行也是完整执行系统</h2>
+<h3>9.1 每个交易日的流程</h3>
+<ol>
+<li>导入前一日结算后的交割单和账户快照；检查未知订单与差异。未核对通过，只能生成研究信号。</li>
+<li>拉取 D 日数据；质量门禁通过后冻结 snapshot，月末生成次日起可执行的目标。</li>
+<li>按已核对账户生成 draft 计划。每行显示证券名/代码、当前/可卖/目标数量、买卖数量、限价保护、费用、原因、有效日和 plan_id。</li>
+<li>执行日核对最新账户、ST/停牌/涨跌停以及价格。没有实时 API 时，人工在券商终端确认并登记检查时刻、参考价与可卖/现金；因此不能声称系统完成自动实时风控。</li>
+<li>运行 preflight 后导出可执行清单，人工提交限价委托，登记券商委托号。报价超过保护区间、资金不足、无法确认状态时不提交该行。</li>
+<li>导入委托状态、成交、费用、资金流水及账户快照。只有成交表无法证明“未成交委托已撤销”；相关计划必须保持待核对。</li>
+<li>收盘后做三方核对：计划/订单、成交/资金流水、券商账户快照。生成日报、阻断项及下次需要处理的事项。</li>
+</ol>
+<p>建议首版真正支持一个通用规范 CSV 和用户券商的一种导出格式；未知券商时用样例映射模板。不要一次承诺支持所有券商。</p>
+<h3>9.2 计划和订单状态机</h3>
+<pre><code class="language-text">Plan: DRAFT → RISK_PASSED → EXPORTED → RECONCILED
+                       ↘ BLOCKED / EXPIRED / SUPERSEDED
+
+Order: INTENT → EXPORTED → SUBMITTED → ACKNOWLEDGED
+                                      ↓          ↓
+                              PARTIALLY_FILLED → FILLED
+                                      ↓
+                                CANCEL_PENDING → CANCELLED
+其他结果: REJECTED / EXPIRED / UNKNOWN
+</code></pre>
+<p>EXPORTED 只代表文件生成。人工已点击但没有拿到委托号，标 UNKNOWN；程序失败、空 CSV 或未看到成交不能把它改为“没下单”。UNKNOWN 阻断同一账户标的方向的替代订单，先查券商终端/当日委托与成交。</p>
+<p>取消请求不等于已取消。允许取消期间出现新成交；最终以累计成交和实际撤销剩余量计算。终态订单收到晚到成交也要幂等入账并重新核对，不能因状态已结束就丢弃。</p>
+<p>intent_id 由账户、target_id、有效交易日、证券、方向、执行批次确定。plan_id 绑定 snapshot、策略版本、账户状态哈希、风险版本及目标；相同输入重复生成返回同一计划。账户变更产生新版本，先显式替代旧版本。旧纸质/HTML 清单不能物理召回，所以新清单突出作废编号；操作记录是必需的。</p>
+<h3>9.3 CSV 契约和导入事务</h3>
+<p>至少支持四类载荷：orders、fills、cash_movements、account_snapshot。成交字段包括 account_id、trade_date、trade_time、exchange、symbol、side、quantity、price、gross_amount、commission、tax、other_fees、broker_order_id、broker_trade_id。计划号可缺，但缺时进入待匹配列表。</p>
+<p>每批先校验编码（UTF-8/常见 GBK）、日期、时区、小数、买卖枚举、单位及金额一致性，再生成 dry-run 差异。批准本地导入后单事务提交；一批有关键冲突则整批不提交并输出行号，不半入账。实盘原件只保留本地且脱敏。</p>
+<p>去重主键优先采用券商规范定义的账户 + 交易日 + 市场 + 成交编号，先确认该券商编号作用域。只有文件哈希不能防止两次导出同一成交。没有稳定编号时不能盲目按价格/数量去重，因为可能是两笔相同成交；需源行标识、委托号、时间与累计量验证并处理歧义。</p>
+<p>计划外交易也必须记账并标 EXTERNAL，不得丢弃；无成交仅有仓位变化时记录 unexplained 差异，不能伪造一笔交易来凑平。费用晚到以 FeeAdjusted 补记。</p>
+<h3>9.4 对账的通过标准</h3>
+<p>持仓数量、可卖数量、冻结数量、委托累计成交精确一致；现金差异须按源的舍入和费用待结算分类。示例每笔 0.01 元的舍入容差只接受已解释差异，不能把“低于 10 元”设成可忽略。比较统一时刻和统一口径，券商市值与本地价格时间不同形成的差异单独展示。</p>
+<p>报告保存来源文件、导入批次、核对时刻、差异类别、处置记录和关闭人。未解释资金/持仓差异阻断新买入。下一日计划必须从已确认真实状态重算，不能沿用理想目标持仓。</p>
+</section><section id="plan-10" class="doc-section"><h2>10 风控和暂停恢复</h2>
+<p>阈值首先是配置示例，未得到你的风险预算前 manual 模式不能使用 paper 默认值悄悄开通。下表中的硬约束是系统行为要求；百分比只是演示参数。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>层次</th>
+<th>首版检查</th>
+<th>失败动作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据</td>
+<td>快照完整、预期交易日、历史状态/因子一致、执行前行情/人工确认时间</td>
+<td>阻断受影响的新交易，生成明确原因</td>
+</tr>
+<tr>
+<td>组合</td>
+<td>paper 总目标仓位 ≤80%，ETF 单只 ≤20%，股票单只 ≤8%；无负权重、无借款</td>
+<td>对非法目标拒绝；被动涨价造成超限进入复核，不虚构强平</td>
+</tr>
+<tr>
+<td>流动性</td>
+<td>示例单次计划金额 ≤过去 20 日成交额中位数的 0.5%；极端价格和整手后偏离</td>
+<td>缩量需重新生成签名计划；不能静默改变策略目标</td>
+</tr>
+<tr>
+<td>订单</td>
+<td>当前现金/可卖、未结委托、tick/lot、涨跌停、价格偏离、有效期、重复计划</td>
+<td>拒绝具体订单并记录；未知状态先核对</td>
+</tr>
+<tr>
+<td>账户</td>
+<td>账本差异、未授权资产、计划外交易、红利税/公司行动待处理</td>
+<td>阻断新买入，保留读数据和对账能力</td>
+</tr>
+<tr>
+<td>运行</td>
+<td>锁冲突、磁盘空间、数据库损坏、备份失败、任务缺失、时间异常</td>
+<td>暂停发单/导出，暴露错误，恢复前检查</td>
+</tr>
+<tr>
+<td>策略风险</td>
+<td>示例净值回撤 10% 进入复核；异常单日损益检查估值与现金流</td>
+<td>不增加风险；是否减仓由预登记政策和可成交条件决定</td>
+</tr>
+</tbody></table></div>
+<p>阈值越过不能保证亏损止于该水平。日频检查看不到完整日内风险，人工执行的实时限制还依赖操作者。</p>
+<p>状态采用 RUNNING、REVIEW、HALTED。暂停时阻止新计划发布，列出全部已导出/已报/未知订单，提示人工核查和必要撤单；程序没有券商控制权，不能在界面显示“已全部撤单”。撤单成功必须有证据。</p>
+<p>恢复需要修复原因 → 获取最新账户与订单状态 → 对账通过 → 检查数据和价格 → 作废旧计划 → 记录操作人及原因 → 重新生成。重启进程或跨过午夜不自动恢复。紧急减少风险仍要走独立记录的减仓计划，并检查可卖与行情，不能用损坏数据盲目清仓。</p>
+</section><section id="plan-11" class="doc-section"><h2>11 交易规则和实际使用前置条件</h2>
+<p>沪深交易规则均发布了 2026 修订版本，通知写明 2026-07-06 生效。上交所页面状态标签与正文曾有不一致，应结合正文、附件和暂缓条文记录版本。历史回测按历史日期应用规则，不把今天的涨跌幅和费用覆盖全历史。<a target="_blank" rel="noopener noreferrer" href="https://www.sse.com.cn/lawandrules/sselawsrules2025/fund/trading/c/c_20260424_10817739.shtml">上交所通知</a> · <a target="_blank" rel="noopener noreferrer" href="https://investor.szse.cn/lawrules/rule/trade/t20260424_620190.html">深交所通知</a></p>
+<p>RuleSet 的选择键至少包括 date、exchange、board、asset_type、特殊状态。沪深主板普通股票与首版股票 ETF 的买入单位、价格最小变动单位、T+1 可卖和涨跌停分别验证。不要用“所有 A 股/ETF 都是 10% 或都可 T+0”的常量。即使首版不新买 ST，也要能处理持仓转 ST 后的真实限制。</p>
+<p>程序自动生成指令也在程序化交易定义范围内，人工点击不能自动推定免报告。manual 模式实际使用前，向券商说明“系统生成买卖数量和清单，个人手动提交”，落实该账户适用的报告/核查流程，保存确认记录。<a target="_blank" rel="noopener noreferrer" href="https://www.csrc.gov.cn/csrc/c100028/c7480577/content.shtml">证监会发布说明</a> · <a target="_blank" rel="noopener noreferrer" href="https://www.sse.com.cn/lawandrules/sselawsrules2025/trade/universal/c/c_20250612_10781696.shtml">上交所实施细则</a> · <a target="_blank" rel="noopener noreferrer" href="https://www.szse.cn/lawrules/rule/trade/t20250403_612770.html">深交所实施细则通知</a></p>
+<p>这些是实际投入资金的入口条件，不阻碍现在完成代码、数据样本和模拟账户。用户尚未提供券商、费率、账户初始状态和个人风险预算，应在配置中标为 required，不猜测。</p>
+</section><section id="plan-12" class="doc-section"><h2>12 Harness 比较和可替换方式</h2>
+<p>这里分成两件事：确定性 harness 管理一次实验如何执行和记录；AI harness 提出假设、写候选代码、根据开发集反馈迭代。首版必须拥有前者，后者先比较再决定，与你的回答一致。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>候选</th>
+<th>适合的需求</th>
+<th>接入成本与局限</th>
+<th>本项目结论</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>轻量 CLI + 标准 RunResult</td>
+<td>两个规则策略、快照、配置、固定验收</td>
+<td>自写少量编排与登记；不提供自动研究</td>
+<td>首版直接实现，作为公共评估入口</td>
+</tr>
+<tr>
+<td>Qlib workflow / qrun</td>
+<td>因子面板、ML 训练、时间切分与实验记录</td>
+<td>数据需导出/接 provider；评估资金与费用需改成真实约束</td>
+<td>最优先的 ML 扩展候选，不替代账户账本</td>
+</tr>
+<tr>
+<td>Microsoft RD-Agent(Q)</td>
+<td>自动因子/模型迭代、研报研究</td>
+<td>当前文档要求 Linux，多数场景依赖 Docker；默认量化路径与 Qlib 结合</td>
+<td>后续独立环境试验，候选回到本系统验收</td>
+</tr>
+<tr>
+<td>OnePunchMonk/AgentQuant</td>
+<td>失败记忆、搜索预算、可审阅研究过程</td>
+<td>A 股与数据适配仍需工作，部分优化 benchmark 使用 mock</td>
+<td>借鉴流程，不把 README 结果当可用策略</td>
+</tr>
+<tr>
+<td>RndmVariableQ/AlphaAgent</td>
+<td>A 股因子 DSL / 自动挖掘探索</td>
+<td>需要核历史时点、当前代码与论文版本、代码授权</td>
+<td>保留研究候选，暂不成为首版依赖</td>
+</tr>
+</tbody></table></div>
+<p>依据：<a target="_blank" rel="noopener noreferrer" href="https://qlib.readthedocs.io/en/latest/component/workflow.html">Qlib</a>、<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/RD-Agent">RD-Agent</a>、<a target="_blank" rel="noopener noreferrer" href="https://rdagent.readthedocs.io/en/latest/scens/quant_agent_fin.html">Quant 场景</a>、<a target="_blank" rel="noopener noreferrer" href="https://github.com/OnePunchMonk/AgentQuant">AgentQuant</a>、<a target="_blank" rel="noopener noreferrer" href="https://github.com/RndmVariableQ/AlphaAgent">AlphaAgent</a>。</p>
+<p>建议以后用相同数据快照和 10 个固定候选任务做对比，而不是各跑各的排行榜。评价维度：可复现率、有效候选比例、时间/费用、失败可解释性、对公共评估器的遵从、数据适配成本、Mac/Linux 迁移和授权。</p>
+<p>AI 候选产物限定为策略包/因子包 + manifest，写明所需字段、lookback、训练截止日、数据来源、代码 hash 与参数。只能在无账户凭据、只读研究快照的隔离工作进程运行。交易计划发布者仅接受已批准的具体代码版本；harness 无权重写费用、风险阈值、真实账本或自动扩大仓位。这是保护评估完整性和账户边界的设计。</p>
+<p>可替换不等于所有模型零成本转换。Qlib 的因子、模型可包装成 Strategy；RD-Agent 产生的 Qlib 工作流仍需转出标准信号或策略制品，再用相同 RQAlpha 评估器复核。若不能表达该候选，报告 Unsupported，不能另用一个更理想的回测结果补位。</p>
+</section><section id="plan-13" class="doc-section"><h2>13 实验纪律和报告规格</h2>
+<p>每个 run 固定：Git commit 与未提交 diff hash、Python/依赖锁 hash、策略包/参数、数据快照、费率/规则/风险版本、撮合政策、时间切分、初始账户、seed、执行命令、开始/结束时间、状态及异常。缓存键覆盖上述输入；费用或单位变了也必须失效。</p>
+<p>建议股票从数据完整可用的早期年份开发，2023–2024 作验证、2025 至最近完整交易日作一次性留出测试只是候选切分；实际区间须在初次策略运行前登记。如果此前已针对这段历史选择策略或看过大量结果，它只是回看验证，不再叫干净 holdout。之后积累的 paper 结果作为真正前瞻记录。</p>
+<p>开发/验证集可做少量预登记邻域与成本压力；失败实验也保存。封存集单独目录/权限与解锁动作，候选生成进程不能读；如果反复向 agent 返回“封存表现好/坏”，同样会泄露。定量研究的多重尝试问题见 <a target="_blank" rel="noopener noreferrer" href="https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf">The Probability of Backtest Overfitting</a>。</p>
+<p>日报和回测报告至少包括：</p>
+<ul>
+<li>数据截止时间、账户核对状态、当前总/可用现金、持仓与目标偏差、待办订单、阻断原因。</li>
+<li>净值、年化收益、最大回撤、波动、Sharpe（明确无风险利率及频率）、收益样本区间；短样本不强调年化。</li>
+<li>基准与超额的定义、逐年/分段表现、ETF/个股/现金归因，资金流和分红影响。</li>
+<li>成交数量、每笔金额、双边换手 = 买卖成交额绝对值之和 / 平均净资产、费用、滑点、未成交率、现金拖累。</li>
+<li>不利成交/成本 2 倍和 3 倍/延后一日/小本金 10 万及 30 万的结果；不需要无目的地穷举搜索。</li>
+<li>assumptions 列表：历史可用时间推定、ETF 清单选择偏差、日频成交代理、缺乏穿透、未支持公司行动等。</li>
+<li>数据许可范围、完整输入引用、全部实验索引和运行失败原因。</li>
+</ul>
+<p>回测成功只证明计算完成。策略是否进入人工实盘另有书面候选评审：结果能够复现、样本外解释合理、成本/延迟后仍满足你预设目标、风险和资金匹配。首版可验收为“工程可用但两条策略均不值得投入”。</p>
+</section><section id="plan-14" class="doc-section"><h2>14 运维和恢复</h2>
+<p>首版日常任务：交易日盘后 ingestion → validate → snapshot → strategy/plan → report → backup；执行日另有 preflight 和 import/reconcile。使用 OS 调度器加幂等 CLI，Mac 可采用 launchd；机器休眠/错过时间时补数据和报告，但过期计划不得自动补执行。</p>
+<p>每个 job 用 exchange_date + job_type + config_hash 唯一登记，运行前拿锁，写 heartbeat 和结束状态。单进程崩溃后下一次启动先检查未结束任务和导入事务；相同 batch 不重复扣款。研究并行跑时各自使用独立运行数据库，只汇总产物索引。</p>
+<p>结构化日志包含 run_id、snapshot_id、plan_id、intent_id、event_id 和错误类别，不记录 token 或完整证券账号。首版终端错误码 + 本地异常报告必做；无人值守通知插件可后加。暂停后必须能继续导入与核对。</p>
+<p>账户事件持久化成功后才返回成功。每日使用 SQLite Backup API/一致快照备份账本，同时保存被引用的 manifest、配置和原始成交导入文件；不能只复制一个正在写入的 SQLite 主文件。每月做一次恢复演练，目标是在 30 分钟内恢复最近完整备份并重放已保存的源文件；这是待验证目标，不是本次已测结论。<a target="_blank" rel="noopener noreferrer" href="https://www.sqlite.org/backup.html">SQLite 备份</a></p>
+<p>有外部磁盘或私人备份存储时保留第二份加密副本。磁盘丢失时仅本机备份不构成灾备；未配置异地/离机副本前在运行报告中标明该限制。恢复可能缺失的交易以券商记录重新导入，不猜测。</p>
+</section><section id="plan-15" class="doc-section"><h2>15 实施顺序与完成标准</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>工作与交付</th>
+<th>必须通过才能进入下一阶段</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>M0 依赖与数据可行性</td>
+<td>契约 v1、RQAlpha 安装/数据适配试验、权限探测、许可与环境记录</td>
+<td>股票/ETF 样例能走引擎；时间顺序与关键公司行动无未解释错误</td>
+</tr>
+<tr>
+<td>M1 离线闭环</td>
+<td>合成数据、存储、账本、风险、计划、重复导入与故障恢复</td>
+<td>一条 demo 跑通，手算与异常用例通过；明确标合成</td>
+</tr>
+<tr>
+<td>M2 真实研究</td>
+<td>完整样本期数据、ETF/个股示例、基准、报告与实验记录</td>
+<td>数据质量/来源完整；无未来 bar 泄漏；结果可复现</td>
+</tr>
+<tr>
+<td>M3 持续 paper</td>
+<td>真实新数据逐日运行、人工 CSV 工作流演练</td>
+<td>跨重启、部分成交、费用晚到、未知订单与对账均可恢复</td>
+</tr>
+<tr>
+<td>M4 人工实际使用</td>
+<td>账户初始化、券商格式、个人风控、费率/报告流程落实</td>
+<td>工程和个人入口条件满足，用户明确决定使用具体版本</td>
+</tr>
+</tbody></table></div>
+<p>工作量估算：专业 Python 开发者串行投入约 20–35 个有效人日；主要不确定性在历史数据、引擎边界、公司行动和券商导出格式。agent 可以减少编码时间，但不能省略数据授权和市场观察。纸面运行至少覆盖 2–3 次真实调仓可检验操作，月度策略意味着数月；离线回放可先查技术流程，不能代替前瞻观察。</p>
+<p>完整验收要求：</p>
+<ol>
+<li>干净环境按 README 可运行，不需要付费 token 完成合成 demo。</li>
+<li>ETF 和个股均运行真实数据的完整策略，不仅写接口占位。</li>
+<li>新数据源或新策略通过公共 contract tests 后可替换，旧 run 仍可重放。</li>
+<li>至少覆盖未来信息、T+1、整手/零股、涨跌停、停牌、分红送转、费用分拆、部分成交、重复导入、UNKNOWN、断电恢复和退市。</li>
+<li>风控真实阻断执行清单；账本、账户差异可追溯，不通过就不发布新买单。</li>
+<li>自动交易仍未启用；系统清楚标识 demo、paper、manual，不会因配置默认值把研究输出变成实盘动作。</li>
+</ol>
+</section><section id="plan-16" class="doc-section"><h2>16 从哪里开工</h2>
+<p>执行 agent 首先阅读本计划与 <a href="#tasks" data-panel-link="tasks">任务包</a>，建立契约和两个有确定答案的合成案例，然后做 RQAlpha 与数据源的窄范围适配试验。不要先做 UI、抓全市场分钟数据或让 agent 开始因子搜索。</p>
+<p>建议仓库布局如下；这是待实现目标，当前仓库只交付调研与计划：</p>
+<pre><code class="language-text">src/ashare/
+  domain/        # 类型、事件、规则和错误语义
+  ports/         # Provider / Strategy / Engine / Execution / Ledger
+  data/          # ingest、normalize、quality、snapshot
+  strategies/    # ETF 趋势、个股低波动、被动基准
+  portfolio/     # 聚合、配额、差额订单和现金计划
+  risk/          # 门禁与暂停恢复
+  accounting/    # 事件账本、批次、费用与公司行动
+  execution/     # 计划生命周期与对账
+  adapters/
+    data/        # tushare、规范 CSV，后续 rqdata
+    backtest/    # rqalpha
+    execution/   # paper、manual_csv，后续 xtquant
+    storage/     # parquet、duckdb、sqlite
+  research/      # ExperimentSpec、产物与候选验收
+  reporting/
+  cli/
+  ops/           # 日常任务、锁、备份恢复
+configs/
+tests/{contracts,golden,integration,recovery}/
+fixtures/synthetic/
+docs/adr/
+</code></pre>
+<p>拟定命令体验如下，<strong>这些命令是实现验收规格，现在尚不存在</strong>：</p>
+<pre><code class="language-sh">uv sync --frozen
+uv run ashare demo --scenario complete
+uv run ashare data probe --provider tushare
+uv run ashare data sync --config configs/research.yaml
+uv run ashare data validate --batch BATCH_ID
+uv run ashare snapshot create --batch BATCH_ID
+uv run ashare backtest --config configs/etf_trend.yaml --snapshot SNAPSHOT_ID
+uv run ashare backtest --config configs/stock_lowvol.yaml --snapshot SNAPSHOT_ID
+uv run ashare paper step --date YYYY-MM-DD
+uv run ashare plan build --account paper --asof YYYY-MM-DD
+uv run ashare plan preflight --plan PLAN_ID
+uv run ashare plan export --plan PLAN_ID
+uv run ashare import preview --account paper --mapping configs/broker_csv.yaml --file FILE
+uv run ashare import apply --batch BATCH_ID
+uv run ashare reconcile --account paper --date YYYY-MM-DD
+uv run ashare report daily --account paper --date YYYY-MM-DD
+uv run ashare risk halt --account paper --reason REASON
+uv run ashare backup create --account paper
+uv run ashare backup verify --backup BACKUP_ID
+</code></pre>
+<p>离线 demo、真实历史研究、持续 paper 和人工账户各有完成证据。执行 agent 汇报时要逐项说明哪些已运行、哪些只检查代码、哪些仍需账号或真实市场验证。</p>
+</section></article><article class="panel" data-panel="modules" hidden><section id="modules-0" class="intro">
+<p>更新日期：2026-10-04。本文细化 <a href="#plan" data-panel-link="plan">实现计划</a>，回答模拟盘如何运行、各模块由哪些 Python 文件组成，以及如何替换关键组件来学习。本轮仍然只修改设计资料，没有创建或运行交易系统。</p>
+<p>建议保留一套明确的首版默认组合，同时为不同组件定义替换接口。下列目录、脚本名和配置片段是待实现规格；不要把它们误认为当前已存在的程序。没有必要在首版把所有备选都安装一遍。</p>
+</section><section id="modules-1" class="doc-section"><h2>1 模拟盘可以怎样做</h2>
+<p>模拟盘使用虚拟资金，没有真实证券买卖。与历史回测的差别在于：历史回测可以一次计算很多年；前瞻模拟盘随现实日期推进，每天只使用那时已经得到的数据。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>如何运行</th>
+<th>能验证什么</th>
+<th>不能据此证明什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>本地日线模拟盘，首版建议</td>
+<td>每日接新行情，前一日已确定的订单按登记规则在下一交易日模拟结算</td>
+<td>数据更新、策略信号、账户连续性、交易限制、风控、重启恢复</td>
+<td>日内精确成交、真实排队、券商接口质量</td>
+</tr>
+<tr>
+<td>本地实时行情仿真</td>
+<td>接实时行情，由本地模拟器处理虚拟订单</td>
+<td>盘中状态、订单生命周期、部分成交/撤单流程</td>
+<td>真实券商接受该订单或实盘必然同价成交</td>
+</tr>
+<tr>
+<td>券商模拟账户</td>
+<td>接入券商提供的测试环境，用虚拟资金报撤单</td>
+<td>具体 SDK、账户、回报和查询接入</td>
+<td>模拟环境与实盘的流动性、费用和权限完全一致</td>
+</tr>
+<tr>
+<td>人工操作演练</td>
+<td>对本地模拟盘的计划手工填写虚拟委托/成交 CSV</td>
+<td>用户核对清单、导入、纠错和对账的完整操作</td>
+<td>证券交易已发生</td>
+</tr>
+</tbody></table></div>
+<p>vn.py 的 <a target="_blank" rel="noopener noreferrer" href="https://github.com/vnpy/vnpy_paperaccount">PaperAccount</a> 官方说明支持基于实盘行情进行本地仿真，可作为实时方案候选。是否覆盖本项目的股票/ETF 结算、分红、费用与恢复需求，仍要跑相同契约测试；模块名不能代替验收。</p>
+<p>券商模拟账户需要确认实际券商是否提供、支持哪些品种、如何开通、指定终端和 SDK 环境。此前已读的 <a target="_blank" rel="noopener noreferrer" href="https://dict.thinktrader.net/nativeApi/xttrader.html">xtquant 文档</a> 描述了报撤单、查询和回调；本轮重访超时，不能据此承诺你已有可用模拟账号。首版本地模拟不依赖这一步。</p>
+<h3>1.1 首版日线模拟的一天</h3>
+<ol>
+<li>建立独立 paper 账户，例如虚拟资金 20 万元，账户名称明确显示“模拟”；不加载真实下单凭据。</li>
+<li>D 日盘后拉取并验收数据，冻结数据版本。月末策略生成目标，订单计划最早 D+1 生效。</li>
+<li>D+1 到来后，使用当时已获得的状态做事前检查；若状态晚到，只能在到达后采取行动，不能回写成早已知道。</li>
+<li>D+1 收盘数据到齐后，模拟器结算此前已冻结的订单：按价格保护、停牌、涨跌停、数量和费用产生模拟成交或拒单。成交价模型沿用主计划的“次日收盘代理”，不能临时挑当天最优价。</li>
+<li>更新持仓、现金、股利权益和可卖数量，核对模拟器与独立账本，生成日报。记录成交所属市场时刻和本系统实际获得/入账时刻。</li>
+<li>没有调仓的日子照样更新估值、处理公司行动、检查风险。下一日继承账户，不能重置为 20 万。</li>
+</ol>
+<p>收盘后的完整 bar 只能用于本次模拟结算和之后的策略决策；不能反过来修改此前订单。价格代理与真实人工操作窗口有差异，日报始终显示模拟标记与成交假设。</p>
+<h3>1.2 模拟器如何复用</h3>
+<p>PaperAdapter 负责连接持续运行流程与模拟引擎，<strong>它不另写一套与回测不同的金融撮合规则</strong>。首版优先复用已验证的 RQAlpha 适配层。实际可行的状态续跑方式在 T04 试验后确定：</p>
+<ul>
+<li>优先方案：保存并恢复引擎状态、账户、订单、策略状态和事件游标。引擎检查点与 SQLite 事件提交通过 batch_id、状态哈希和运行登记对应；跨文件不假设存在自动原子事务。</li>
+<li>备选方案：若该引擎版本不能可靠续跑，从模拟账户起始日重放已冻结的逐日数据、参数和订单。比对既有事件前缀，只把新日事件幂等写入。发现旧交易改变就停止核对，不覆盖昨天已发布的模拟成绩。</li>
+<li>两种方案都需要“连续跑十天”和“第五天重启后再跑五天”的等价测试。模拟引擎与审计账本相同不等于独立证明正确，因此仍保留手算案例。</li>
+</ul>
+<p>策略/费率升级不能重写过去的模拟结果。首版最容易审计的做法是：继续保留旧 paper 账户，新建独立 paper 账户比较新版本；实际持仓策略切换则显式记录生效日和交接状态。</p>
+<p>机器错过某日任务时可以补数据，但未事先生成的订单不能追溯为当天已提交。补做的历史实验归入 research，不能混进前瞻模拟业绩。</p>
+<h3>1.3 模拟盘交付和通过标准</h3>
+<p>至少交付 paper.yaml、paper.sqlite、每日数据/参数清单、模拟订单/成交、连续净值、风险原因和日报。以下命令是待实现规格：</p>
+<pre><code class="language-sh">uv run ashare paper init --config configs/paper.yaml
+uv run ashare paper step --date YYYY-MM-DD
+uv run ashare paper status
+uv run ashare report daily --account paper --date YYYY-MM-DD
+</code></pre>
+<p>验收包括：不需要券商账号；ETF 与个股账户连续存在；同一天重复运行没有重复成交；重启不丢状态；过期未生成计划不补成交；部分成交/未知状态可演练；模拟模块无法调用真实交易适配器。完成本地仿真不代表完成券商模拟或真实交易验证。</p>
+</section><section id="modules-2" class="doc-section"><h2>2 系统分成哪些模块</h2>
+<p>以下全部以规划中的 src/ashare/ 为根目录。表中的输入输出是模块边界，关键文件是建议的内部拆分。短小功能可先放在同一文件，避免为每一个函数造一个文件。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>输入 → 输出</th>
+<th>重点 Python 文件</th>
+<th>组成和责任</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>公共定义和接口</td>
+<td>外部载荷 → 校验后的标准对象</td>
+<td>domain/models.py、domain/events.py、ports/interfaces.py</td>
+<td>Instrument、TargetPortfolio、OrderIntent、ExecutionEvent、Protocol 和错误类型</td>
+</tr>
+<tr>
+<td>数据采集与整理</td>
+<td>数据请求/原始响应 → 标准批次</td>
+<td>data/ingest.py、data/normalize.py、data/quality.py</td>
+<td>拉取、分页、单位转换、缺失分类与质量阻断</td>
+</tr>
+<tr>
+<td>数据查询与时点</td>
+<td>数据快照/决策时间 → 策略可见的数据</td>
+<td>data/snapshot.py、data/market_view.py、data/universe.py</td>
+<td>冻结清单、历史股票池、可见时点过滤、覆盖检查</td>
+</tr>
+<tr>
+<td>数据商适配</td>
+<td>标准请求 → 指定供应商响应</td>
+<td>adapters/data/tushare_provider.py、csv_provider.py；后续 rqdata_provider.py</td>
+<td>供应商 SDK/字段仅留在这里</td>
+</tr>
+<tr>
+<td>存储适配</td>
+<td>标准表/事件 → 文件或数据库</td>
+<td>adapters/storage/parquet_store.py、duckdb_query.py、sqlite_store.py</td>
+<td>具体存储实现；迁移后新增 postgres_store.py</td>
+</tr>
+<tr>
+<td>策略</td>
+<td>可见数据/参数 → 目标仓位</td>
+<td>strategies/base.py、buy_hold.py、etf_trend.py、stock_lowvol.py</td>
+<td>不含券商 API，不直接操作 SQL；基准也是策略</td>
+</tr>
+<tr>
+<td>组合与订单规划</td>
+<td>多策略目标/账户 → 聚合目标与差额订单</td>
+<td>portfolio/allocator.py、planner.py、sizing.py</td>
+<td>额度合并、整手取整、现金预留、未完成计划占用</td>
+</tr>
+<tr>
+<td>风控</td>
+<td>目标/订单/数据/账户 → 通过或阻断及原因</td>
+<td>risk/engine.py、rules.py、state.py</td>
+<td>必要硬检查、可插拔规则、暂停与恢复；规则多后再拆 data/portfolio/order 规则文件</td>
+</tr>
+<tr>
+<td>回测适配</td>
+<td>实验规格/快照 → 模拟事件与结果</td>
+<td>adapters/backtest/rqalpha_engine.py、rqalpha_data.py、rqalpha_bridge.py</td>
+<td>把标准数据与策略接入引擎，转换订单/成交，不把内部对象泄漏出去</td>
+</tr>
+<tr>
+<td>运行与执行</td>
+<td>订单/状态 → 回报或人工计划</td>
+<td>execution/paper_runner.py、plan_service.py、order_state.py；adapters/execution/paper.py、manual_csv.py</td>
+<td>持续模拟、计划生命周期、人工导出；以后加券商 adapter</td>
+</tr>
+<tr>
+<td>账本与核对</td>
+<td>成交/费用/公司行动/源快照 → 账户与差异</td>
+<td>accounting/ledger.py、positions.py、corporate_actions.py；execution/reconcile.py</td>
+<td>事件去重、现金与批次、可卖数量、分红、三方核对</td>
+</tr>
+<tr>
+<td>实验记录与报告</td>
+<td>配置/事件/账户 → 可复现实验与页面</td>
+<td>research/runner.py、registry.py、evaluate.py；reporting/metrics.py、daily_report.py</td>
+<td>运行 manifest、完整实验索引、收益风险指标、日报模板</td>
+</tr>
+<tr>
+<td>运维与入口</td>
+<td>CLI/调度参数 → 任务运行状态</td>
+<td>cli/main.py、ops/daily.py、ops/locks.py、ops/backup.py</td>
+<td>作业锁、幂等任务、备份恢复；调度器只启动入口</td>
+</tr>
+</tbody></table></div>
+<p>规则/费用表还需要 domain/trading_rules.py、accounting/fees.py，以及配置中的有效日期；日志、配置解析和供应商注册可置于 config.py、bootstrap.py。它们属于支撑代码，不额外变成一套业务服务。</p>
+<p>首版用一个 Python 包和一个 CLI 即可。运行账户只有一个逻辑写者；研究进程可以读取不可变数据并各自输出结果。模块数量不等于服务器或微服务数量。</p>
+<h3>2.1 值得优先读懂的六个文件</h3>
+<ol>
+<li>strategies/etf_trend.py：怎样把市场数据变成目标仓位。</li>
+<li>portfolio/planner.py：目标比例怎样变成真实可买卖的数量。</li>
+<li>risk/rules.py：哪些情况下必须拒绝交易。</li>
+<li>adapters/backtest/rqalpha_bridge.py：同一套策略如何接入成熟引擎。</li>
+<li>accounting/ledger.py：成交怎样改变现金和持仓。</li>
+<li>execution/reconcile.py：如何证明本地记录与来源一致。</li>
+</ol>
+<p>学习时可以沿着一个虚构买单走过这六个文件，比一开始阅读整个框架更直观。随后再阅读 normalize.py，理解数据错误如何影响下游。</p>
+<h3>2.2 必须随代码存在的配置和产物</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>类别</th>
+<th>建议文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>环境</td>
+<td>configs/demo.yaml、research.yaml、paper.yaml、manual.yaml</td>
+<td>明确数据和账户隔离；manual 不继承演示风险阈值</td>
+</tr>
+<tr>
+<td>策略</td>
+<td>configs/strategies/etf_trend.yaml、stock_lowvol.yaml</td>
+<td>参数、调仓周期、候选范围</td>
+</tr>
+<tr>
+<td>规则和风险</td>
+<td>configs/rules/<em>.yaml、configs/risk/</em>.yaml</td>
+<td>日期有效的市场规则、硬限制和风险预算</td>
+</tr>
+<tr>
+<td>费用</td>
+<td>configs/fees/*.yaml</td>
+<td>账户、品种、方向、最低佣金、历史税费</td>
+</tr>
+<tr>
+<td>人工映射</td>
+<td>configs/brokers/manual_csv.yaml</td>
+<td>券商字段、编号作用域、编码和金额口径</td>
+</tr>
+<tr>
+<td>测试</td>
+<td>tests/contracts/、golden/、integration/、recovery/</td>
+<td>替换接口、手算、整链路和异常恢复</td>
+</tr>
+<tr>
+<td>结果</td>
+<td>runtime/runs/、runtime/plans/、runtime/state/</td>
+<td>回测与模拟产物、清单和隔离账户</td>
+</tr>
+</tbody></table></div>
+</section><section id="modules-3" class="doc-section"><h2>3 数据供应商的备选</h2>
+<p>数据供应商决定从哪里拿数据，存储方案决定拿到后如何保管。这两个选择独立。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>候选</th>
+<th>适合的用途</th>
+<th>额外成本或局限</th>
+<th>兼容做法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tushare Pro，当前主线</td>
+<td>首版日线、价格类策略、历史状态调查</td>
+<td>逐接口权限、分页与历史覆盖要验收</td>
+<td>TushareProvider 输出标准表</td>
+</tr>
+<tr>
+<td>RQData</td>
+<td>更完整的数据需求及后续 PIT 财务研究</td>
+<td>询价、授权、字段/时间语义对比；不能默认所有问题自动解决</td>
+<td>RQDataProvider，同一快照规范</td>
+</tr>
+<tr>
+<td>JQData</td>
+<td>另一商业数据源，使用官方 jqdatasdk</td>
+<td>当前权限和历史 PIT 覆盖需实际确认；本轮官网访问受地域限制</td>
+<td>JQDataProvider，同一证券/单位/时点映射</td>
+</tr>
+<tr>
+<td>AKShare</td>
+<td>小样本、学习、来源交叉核查</td>
+<td>接口与上游变化、使用范围逐项审查</td>
+<td>独立来源标签，不在主源失败时静默拼接</td>
+</tr>
+<tr>
+<td>规范 CSV / Parquet 导入</td>
+<td>无账号开发、第三方合法样本、离线学习</td>
+<td>无自动更新，覆盖与质量由导入者负责</td>
+<td>CsvProvider，是首版必须的离线入口</td>
+</tr>
+</tbody></table></div>
+<p>依据：<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/1">Tushare</a>、<a target="_blank" rel="noopener noreferrer" href="https://www.ricequant.com/doc/rqdata/python/stock-mod.html">RQData</a>、<a target="_blank" rel="noopener noreferrer" href="https://github.com/JoinQuant/jqdatasdk">JQData SDK</a>、<a target="_blank" rel="noopener noreferrer" href="https://akshare.akfamily.xyz/introduction.html">AKShare</a>。</p>
+<p>换源的学习实验：选择同一只 ETF/股票同一时间段，比较标准化价格、成交量、分红和停牌，再解释差异。不能只看最终收益是否相近，也不能把差异平均掉。</p>
+</section><section id="modules-4" class="doc-section"><h2>4 数据库和存储的备选</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>组合</th>
+<th>适用场景及学习价值</th>
+<th>代价与边界</th>
+<th>本项目安排</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Parquet + DuckDB + SQLite</td>
+<td>学习列式数据分析与事务账本的分工；单机日线研究</td>
+<td>管理文件 manifest，账户串行写入</td>
+<td>首版默认</td>
+</tr>
+<tr>
+<td>DuckDB 内部表 + SQLite</td>
+<td>学习 SQL 表管理，减少直接处理 Parquet 分区的工作</td>
+<td>仍需数据版本和导出；共享写入仍有进程边界</td>
+<td>小范围对照实验</td>
+</tr>
+<tr>
+<td>SQLite 存行情和账本</td>
+<td>很小样本，学习主键、索引、事务和 SQL</td>
+<td>大范围分析要测性能；版本化仍要设计；研究与实际账户至少分文件</td>
+<td>教学用起点，可保留为 fixtures 后端</td>
+</tr>
+<tr>
+<td>PostgreSQL 存行情和账本</td>
+<td>学习服务端数据库、多个进程/客户端和事务</td>
+<td>需要运行服务、用户权限、索引和备份；行情与账户按 schema/权限隔离</td>
+<td>多机或并发需求出现后评估</td>
+</tr>
+<tr>
+<td>Parquet + DuckDB + PostgreSQL</td>
+<td>保留研究文件层，只升级账户与运行状态服务</td>
+<td>三种组件的部署与迁移成本</td>
+<td>最自然的后续演进之一</td>
+</tr>
+<tr>
+<td>ClickHouse + PostgreSQL</td>
+<td>更大规模分钟/逐笔行情分析，账户仍走事务库</td>
+<td>明显增加运维；不是目前几个日线策略的必要条件</td>
+<td>仅列进阶方向</td>
+</tr>
+</tbody></table></div>
+<p>这些是设计取舍，没有跑过同机基准，不给出虚构性能排名。DuckDB 的本地进程内并发模式、SQLite 的适用边界，以及 PostgreSQL/ClickHouse 的定位可分别核对官方资料。<a target="_blank" rel="noopener noreferrer" href="https://duckdb.org/docs/current/connect/concurrency">DuckDB</a> · <a target="_blank" rel="noopener noreferrer" href="https://www.sqlite.org/whentouse.html">SQLite</a> · <a target="_blank" rel="noopener noreferrer" href="https://www.postgresql.org/docs/current/intro-whatis.html">PostgreSQL</a> · <a target="_blank" rel="noopener noreferrer" href="https://clickhouse.com/docs/get-started/about/intro">ClickHouse</a></p>
+<p>兼容性要求：MarketDataStore 对外只暴露按 snapshot、证券、时间查询的接口；LedgerStore 只暴露事务性事件写入和账户读取。策略不能直接写某种数据库 SQL。迁移时先导出事件、检查数量/现金与历史 hash，再切换 writer；不能同时让两个新旧账本各自接单。</p>
+<p>DuckDB/SQLite 的嵌入式用法都不需要独立数据库服务器；PostgreSQL 通常需要。数据库品牌变化也不会自动改善数据是否完整或是否有未来信息，这仍属于数据模块。</p>
+</section><section id="modules-5" class="doc-section"><h2>5 策略和组合方法的备选</h2>
+<p>策略回答“想持有什么”，组合方法回答“每个标的分多少钱”，风险规则回答“允许这样做吗”。它们分别替换。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>策略方向</th>
+<th>简单规则示例</th>
+<th>新增数据与学习点</th>
+<th>主要陷阱</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>买入持有 / 固定权重</td>
+<td>持有预登记 ETF，必要时恢复固定比例</td>
+<td>基础行情、分红；学习基准与费用</td>
+<td>固定比例调仓和纯买入持有是不同基准</td>
+</tr>
+<tr>
+<td>ETF 趋势，首版主线</td>
+<td>过去 120 日为正、排序取前二，月度检查</td>
+<td>收益窗口、时点、空仓规则</td>
+<td>震荡市反复换仓，固定清单的历史选择偏差</td>
+</tr>
+<tr>
+<td>ETF 均线趋势</td>
+<td>收盘高于过去 N 日均线时持有，否则留现金</td>
+<td>学习平滑窗口、信号滞后</td>
+<td>参数很多且同一趋势信号高度相关</td>
+</tr>
+<tr>
+<td>ETF 相对强弱轮动</td>
+<td>在预登记池中持有近期表现较强者</td>
+<td>横向排名、换手、持有缓冲</td>
+<td>最强者也可能下跌；多个 ETF 持仓重叠</td>
+</tr>
+<tr>
+<td>个股低波动，首版主线</td>
+<td>在流动性合格池中选择近期波动较小者</td>
+<td>历史状态与日收益</td>
+<td>集中于某些行业、低波动不等于低亏损</td>
+</tr>
+<tr>
+<td>个股动量</td>
+<td>从合格池按过去若干月表现排序</td>
+<td>学习横截面信号与换手</td>
+<td>反转、成本、停牌和不可成交影响</td>
+</tr>
+<tr>
+<td>价值 / 质量因子</td>
+<td>结合估值、盈利、现金流等排序</td>
+<td>必须增加公告时点与历史版本财务数据</td>
+<td>最新修订财报回填历史造成未来信息</td>
+</tr>
+<tr>
+<td>ML 排名模型</td>
+<td>用特征预测未来收益排序，再转目标</td>
+<td>Qlib 等、训练/验证切分、模型制品</td>
+<td>样本重叠、过拟合、数据漂移，工程复杂度高</td>
+</tr>
+</tbody></table></div>
+<p>以上是研究候选，不是推荐同时实盘运行。趋势与质量的研究动机可参见 <a target="_blank" rel="noopener noreferrer" href="https://www.aqr.com/Insights/Research/Journal-Article/Time-Series-Momentum">Time Series Momentum</a>、<a target="_blank" rel="noopener noreferrer" href="https://www.aqr.com/Insights/Research/Working-Paper/Quality-Minus-Junk">Quality Minus Junk</a>；这些论文对象与本项目简化的 A 股长仓规则不同，不把论文业绩移植为本项目预期。</p>
+<p>组合分配也有多个学习选项：</p>
+<ul>
+<li>固定额度/等权：每个策略或标的使用预设比例，最容易核对，首版使用。</li>
+<li>波动率倒数权重：近期波动较小的标的给较大权重；需设单标的上限，不能让低估波动导致极端集中。</li>
+<li>风险平价：考虑资产之间相关性，使风险贡献更接近；不等同于简单的波动率倒数。</li>
+<li>最小方差或其他约束优化：依赖历史协方差估计及约束；可用 PyPortfolioOpt 或 Riskfolio-Lib。优化器输出连续权重，仍需 Planner 做整手、现金与费用处理，优化无解时进入复核或显式登记的后备方案，不能偷偷去掉约束。</li>
+</ul>
+<p>库提供的是组合计算能力，不替你证明收益预测准确。<a target="_blank" rel="noopener noreferrer" href="https://github.com/PyPortfolio/PyPortfolioOpt">PyPortfolioOpt</a> · <a target="_blank" rel="noopener noreferrer" href="https://github.com/dcajasn/Riskfolio-Lib">Riskfolio-Lib</a></p>
+<p>首版只实现被动基准、ETF 趋势和个股低波动。为了学习新增一条时，只更换 Strategy/Allocator，固定数据、费率、执行政策和评估区间，不用一次实验同时改变五个组件。</p>
+</section><section id="modules-6" class="doc-section"><h2>6 风控的备选与共同底线</h2>
+<p>风控不适合简单列成互斥的“A 或 B”。现金不能为负、不可卖数量不能卖、未知委托不能盲目重发、数据过期不能交易等硬检查，任何备选方案都保留。可替换的是组合风险政策和检查器实现。</p>
+<h3>6.1 可选择的组合风险政策</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>政策</th>
+<th>做法与学习价值</th>
+<th>局限</th>
+<th>首版安排</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>固定仓位上限与现金预留</td>
+<td>限制总仓位、单只持仓和可用资金</td>
+<td>对波动变化反应较少</td>
+<td>默认，参数由 paper 示例和实际预算分开</td>
+</tr>
+<tr>
+<td>波动率目标</td>
+<td>估计近期风险，波动上升时减少目标总仓位</td>
+<td>估计滞后，可能在剧烈变动后卖出；默认仍不使用杠杆</td>
+<td>后续可加 overlay</td>
+</tr>
+<tr>
+<td>回撤分级处理</td>
+<td>回撤进入不同区间时预警、暂停加仓或按计划减仓</td>
+<td>不能保证损失上限；恢复和滞回规则需要写清</td>
+<td>首版有暂停复核，自动减仓另登记</td>
+</tr>
+<tr>
+<td>行业/相关性限制</td>
+<td>限制同一行业或相关资产集中</td>
+<td>需要历史行业和可靠相关性数据；ETF 穿透又需额外数据</td>
+<td>数据齐备后再做硬约束</td>
+</tr>
+<tr>
+<td>压力测试与尾部风险预算</td>
+<td>用极端市场情景检验组合，或研究 CVaR 等约束</td>
+<td>历史情景不覆盖所有未来事件，优化也可能不稳定</td>
+<td>先做报告；复杂优化后续再加</td>
+</tr>
+</tbody></table></div>
+<p>CVaR 可以理解为：在设定的最差一部分情景里，平均会损失多少。它是统计估计，不是保险。相关组合优化能力见 <a target="_blank" rel="noopener noreferrer" href="https://pyportfolioopt.readthedocs.io/en/latest/GeneralEfficientFrontier.html">PyPortfolioOpt 官方文档</a> 与 <a target="_blank" rel="noopener noreferrer" href="https://riskfolio-lib.readthedocs.io/en/latest/">Riskfolio-Lib 文档</a>。</p>
+<h3>6.2 检查器实现的备选</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>实现</th>
+<th>适合什么</th>
+<th>本项目如何使用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>小型 Python 规则链</td>
+<td>当前单账户、人工清单、希望规则可读</td>
+<td>首版；按 RiskPolicy 接口逐条返回理由，配置化阈值</td>
+</tr>
+<tr>
+<td>RQAlpha sys_risk</td>
+<td>仿真引擎内部的下单合法性检查</td>
+<td>复用，外部账户/数据风控仍保留，不能只在回测中有效</td>
+</tr>
+<tr>
+<td>vn.py RiskManager</td>
+<td>已采用 vn.py 的实时交易工作流</td>
+<td>可替换订单检查实现，但需标准对象适配及版本验证</td>
+</tr>
+<tr>
+<td>PyPortfolioOpt / Riskfolio-Lib</td>
+<td>在生成目标权重时加入组合约束</td>
+<td>属于 Allocator/风险 overlay，不能代替订单和账户检查</td>
+</tr>
+</tbody></table></div>
+<p>vn.py 当前风险模块列出活动订单、日内报撤单、重复订单、单笔数量及委托合法性等规则。本项目参考其可审阅规则思路，不必为了日线人工清单把整个实时框架引入。<a target="_blank" rel="noopener noreferrer" href="https://github.com/vnpy/vnpy_riskmanager">RiskManager</a> · <a target="_blank" rel="noopener noreferrer" href="https://github.com/ricequant/rqalpha">RQAlpha</a></p>
+<p>暂停后仍需允许读取和对账。人工执行模式只能阻止系统发布新清单，无法技术上禁止用户在券商软件另行下单；计划外交易必须导入并触发复核。</p>
+</section><section id="modules-7" class="doc-section"><h2>7 回测执行和 harness 的备选</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>环节</th>
+<th>首版</th>
+<th>其他候选</th>
+<th>迁移所需验证</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>回测引擎</td>
+<td>RQAlpha，先过适配试验</td>
+<td>Backtrader、Hikyuu；vectorbt 用于快速研究；LEAN/Nautilus 作为更广多资产研究方向</td>
+<td>同一订单时序、数据、费用、公司行动及 golden cases；结果不要求盲目相等，要解释差异</td>
+</tr>
+<tr>
+<td>模拟执行</td>
+<td>日线 PaperAdapter 复用已验证引擎</td>
+<td>vn.py PaperAccount、券商模拟环境</td>
+<td>持续状态、回报映射、未成交、T+1、恢复，不能只看是否能下单</td>
+</tr>
+<tr>
+<td>实际执行</td>
+<td>ManualCsvAdapter</td>
+<td>xtquant / vn.py 证券 gateway</td>
+<td>真实券商能力、未知状态、报撤单幂等边界、对账</td>
+</tr>
+<tr>
+<td>确定性研究</td>
+<td>CLI + ExperimentSpec + RunResult</td>
+<td>Qlib workflow；复杂任务出现后再评估调度框架</td>
+<td>同样的数据/评估器/记录，不把任务编排等同策略优势</td>
+</tr>
+<tr>
+<td>AI 研究</td>
+<td>暂不选定</td>
+<td>RD-Agent、AgentQuant、AlphaAgent</td>
+<td>权限、预算、训练/封存隔离、标准候选产物、公开评估复核</td>
+</tr>
+</tbody></table></div>
+<p>依据：<a target="_blank" rel="noopener noreferrer" href="https://github.com/mementum/backtrader">Backtrader</a>、<a target="_blank" rel="noopener noreferrer" href="https://github.com/fasiondog/hikyuu">Hikyuu</a>、<a target="_blank" rel="noopener noreferrer" href="https://github.com/polakowo/vectorbt">vectorbt</a>、<a target="_blank" rel="noopener noreferrer" href="https://qlib.readthedocs.io/en/latest/component/workflow.html">Qlib workflow</a>、<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/RD-Agent">RD-Agent</a>。之前调研的具体许可证和适配边界仍有效，参阅 <a href="#research" data-panel-link="research">调研依据</a>。</p>
+</section><section id="modules-8" class="doc-section"><h2>8 怎样实现兼容而不增加首版负担</h2>
+<p>接口是兼容性的基础，配置只是选择已实现的组件。下面是待实现的配置示意，不是现在可以直接运行的文件：</p>
+<pre><code class="language-yaml">mode: paper
+data_provider: tushare
+market_store: parquet_duckdb
+ledger_store: sqlite
+engine: rqalpha
+execution: paper
+strategies:
+  - name: etf_trend
+    budget: 0.40
+  - name: stock_lowvol
+    budget: 0.40
+risk:
+  checks: mandatory_v1
+  allocation_policy: fixed_caps
+research_runner: local
+</code></pre>
+<p>这些比例仅用于 paper 演示。manual 模式需要独立实际配置。任何一个名字没有实现，启动时明确报 Unsupported，不能配置了 rqdata 就声称已有该适配。</p>
+<p>重点边界如下：</p>
+<pre><code class="language-text">DataProvider.fetch(...)                 -&gt; 原始数据批次
+MarketDataStore.read(snapshot, asof, ...) -&gt; 标准且时点受限的数据
+Strategy.generate(context, data)         -&gt; TargetPortfolio
+Allocator.allocate(targets, account)     -&gt; 聚合目标
+Planner.plan(target, account, rules)     -&gt; OrderIntent[]
+RiskPolicy.evaluate(intents, context)    -&gt; RiskDecision
+ExecutionAdapter.publish(intents)        -&gt; 已导出或已提交的状态回报
+ExecutionAdapter.collect(...)            -&gt; ExecutionEvent[]
+LedgerStore.append_and_project(events)   -&gt; AccountView
+ResearchRunner.evaluate(spec)            -&gt; RunResult
+</code></pre>
+<p>publish 的返回状态必须由 adapter 能力决定：人工只是 EXPORTED，模拟器可以产生 SIMULATED_ACK；两者都不是券商真实确认。账户 ledger 带明确命名空间，模拟事件不能导入 manual 账户。</p>
+<p>每次替换执行同一套 contract tests：列名、单位、时区、历史可见范围、稳定 ID、事件去重、事务及恢复。不把相同函数签名当作经济语义兼容。</p>
+<p>学习顺序建议：</p>
+<ol>
+<li>用 CSV 小样本 + SQLite/Parquet + 买入持有，手算一笔交易。</li>
+<li>接 Tushare 和 DuckDB，比较同一查询的输入输出。</li>
+<li>加 ETF 趋势与个股低波动，保持引擎和费用不变。</li>
+<li>做持续 paper，学习状态、延迟、部分成交和对账。</li>
+<li>替换一个组件做对照：例如 SQLite→PostgreSQL，或等权→波动率倒数。</li>
+<li>有明确研究问题时，再加入 PIT 财报、Qlib 或 AI harness。</li>
+</ol>
+<p>只有第一至第四步属于当前主线。第五、六步是可选学习路线，不自动扩大首版实现范围。</p>
+</section></article><article class="panel" data-panel="tasks" hidden><section id="tasks-0" class="intro">
+<p>本任务包依赖 <a href="#design" data-panel-link="design">首版设计</a>、<a href="#daily" data-panel-link="daily">每日操作手册</a>、<a href="#plan" data-panel-link="plan">实现计划</a> 和 <a href="#modules" data-panel-link="modules">模块与备选</a>，面向随后接手实现的 agent。更新日期：2026-10-05。当前只交付规格和调研，不代表已有可运行的投资系统。用户已确定 ETF 与个股首版都要，执行采用人工交易清单与券商记录导入；首版包括持续本地模拟盘，AI harness 尚未选定。备选方案用于后续对照学习，不要求首版全部实现。</p>
+</section><section id="tasks-1" class="doc-section"><h2>1 可直接交给执行 agent 的提示词</h2>
+<blockquote>
+<p>请先读 DESIGN.md，按 docs/IMPLEMENTATION_PLAN.md 的细节和本任务包实现 A 股最小系统，并用 docs/DAILY_RUNBOOK.md 验收日常操作。先完成 T00 和 T01，保存试验结果及实际运行证据，再按依赖推进。首版同时支持境内股票 ETF 与沪深主板普通股票，包含数据、回测、组合、风控、人工订单、事件账本、导入对账、报告、备份和可复现实验。先用无凭据的合成数据打通，但必须把真实数据能力单独验收。策略、数据商、引擎和执行方式通过稳定契约隔离。</p>
+<p>不安装自动交易 SDK，不连接真实账户、不报单，不让研究 agent 自行改费率/风控。没有付费数据 token 时完成规范 CSV 适配和完整 offline demo，并明确真实历史数据验收尚未完成。不要把原始资料中的研究建议当作用户已接受的仓位或风险预算。</p>
+<p>每个任务完成后记录改动、执行命令、数据快照、输出位置、测试结果和未解决问题。不得用截图或合成数据的净值证明投资效果。遇到数据或引擎能力缺口，记录明确的 Unsupported/Blocked 项并完成不依赖它的工作，不静默改样本范围、换供应商或自写完整回测引擎来掩盖问题。</p>
+</blockquote>
+</section><section id="tasks-2" class="doc-section"><h2>2 任务依赖和交付节奏</h2>
+<pre><code class="language-text">T00 选型试验 ──→ T01 契约与工程骨架
+                      ├─→ T02 数据与快照 ──→ T04 引擎适配 ──→ T07 策略研究
+                      ├─→ T03 账本 ────────→ T05 组合和风控 ──→ T06 人工执行
+                      └─→ T08 实验与报告（先定义 manifest，后接各模块）
+
+T02 + T03 + T04 + T05 + T06 + T07 + T08
+                      ↓
+               T09 集成与恢复 → T10 持续 paper 与用户交接
+
+T11 自动交易 / AI harness / PIT 财务：另行扩展，非首版验收项
+</code></pre>
+<p>T00 可以先用极小的临时类型测试引擎；T01 冻结公开契约后再进入正式实现。多个 agent 的实现任务可在契约冻结后拆分，但账户写入仍是单写者。共享 domain、schema 和 fixture 必须由一个集成负责人维护。此处只描述未来可拆分方式，不代表本次已创建或派发其他 agent。</p>
+</section><section id="tasks-3" class="doc-section"><h2>3 分项任务</h2>
+<h3>T00 依赖数据和引擎可行性试验</h3>
+<p>估计 2–3 人日。产物：docs/adr/0001-engine-and-data.md、环境锁定候选、data-capabilities.json、spike-report.md。</p>
+<ul>
+<li>在独立环境验证 Python 3.11 与候选 RQAlpha；记录 OS、CPU、完整依赖和所选 release/commit。</li>
+<li>审阅 LICENSE 的真实投资用途边界；不能只读包元数据。无法使用时，比较 Hikyuu 的相同窄场景，再以 ADR 更新推荐。</li>
+<li>跑官方样例只算引擎烟测；用自有两资产 synthetic datasource 证明股票和 ETF 类型、calendar、bar 与 T+1 的映射。</li>
+<li>复现 1d + next_bar 的行为；用 D 日信号、D+1 突变价格证明实际延迟方案。</li>
+<li>核验分红税、分红到账、送转可卖日和退市设置。不能支持的部分列为 adapter 工作。</li>
+<li>对 Tushare 每个所需接口探测权限、最早/最晚日期、分页上限、单位与数据覆盖，不在此任务购买服务。</li>
+<li>没有 token 时输出 NOT_TESTED，不宣称 source-ready；准备规范 CSV 路径，使后续离线任务可以继续。</li>
+</ul>
+<p>完成条件：明确哪些可以复用、哪些需要 Mod，预估适配规模，两个主要资产类别通过最小案例。失败时不以改名为“自研引擎”结束。</p>
+<h3>T01 工程骨架契约和配置</h3>
+<p>估计 1–2 人日。产物：pyproject.toml、锁文件、domain/ports、config schema、初始 migration、README。</p>
+<ul>
+<li>实现 Instrument、Snapshot、TargetPortfolio、OrderIntent、ExecutionEvent、AccountView、ExperimentSpec。</li>
+<li>统一 timestamp、元/股/份、Decimal、稳定 ID、错误码和 schema_version。</li>
+<li>支持 demo/research/paper/manual 配置隔离。manual 的券商信息、费率和个人阈值缺失时不能生成可执行清单。</li>
+<li>建立数据/引擎/策略/执行 adapter registry，先显式注册类，不做复杂插件市场。</li>
+<li>确认 domain 不依赖供应商/框架模块；外部结构导入需要校验。</li>
+<li>CLI 错误有非零退出码、错误类别和可定位上下文。</li>
+</ul>
+<p>完成条件：未知 schema 大版本、无时区 timestamp、NaN/负数量、错误 symbol 映射和非法模式转换可被拒绝。</p>
+<h3>T02 数据层和快照</h3>
+<p>估计 3–5 人日。产物：Tushare/CSV adapters、标准表、质量报告、snapshot manifest、数据说明。</p>
+<ul>
+<li>raw 落盘、断点续传、限流重试、分页完整性和失败批次可恢复；不在调用日志泄漏 token。</li>
+<li>转换 vol 手→股/份、amount 千元→元；股票和基金因子分别映射。</li>
+<li>把 trade status、company actions、symbols 与行情纳入同一 snapshot。</li>
+<li>历史股票范围包括后来退市者；当前列表只是一个数据源，不是历史股票池。</li>
+<li>published/observed/available 时间分别存储；声明推定可用时间与严格观测模式。</li>
+<li>分红采用已实施方案，税前金额与税后字段分清，不能重复扣税。</li>
+<li>发布前校验，生成内容哈希；重拉修订产生新快照，旧快照不变。</li>
+<li>校验跨供应商替换：同一规范 CSV 的数据经过不同适配器，标准表一致；真实两供应商比较只能在具备权限后做。</li>
+</ul>
+<p>完成条件：断点/重复拉取不漏行不重复；缺关键数据阻断发布；旧 snapshot 重放不受新数据改变；股票全市场研究与抽样 demo 可区分。</p>
+<h3>T03 事件账本和公司行动</h3>
+<p>估计 3–5 人日。产物：SQLite migration、事件去重、持仓批次/现金投影、手算 fixtures。</p>
+<ul>
+<li>先做资金、成交、费用和冻结；然后实现应收股利、到账、红利税、送转/解锁、退市估值、实际回收。</li>
+<li>事务内完成事件与投影；把 raw/source 证据与已入账事件关联。</li>
+<li>重放不依赖当前墙上时间、当前供应商或随机数。</li>
+<li>更正走 reversal/correction；批次税务信息不足时显式标记，不伪造日期。</li>
+<li>持仓可卖、现金可用/总额、未结订单预留清晰分开。</li>
+</ul>
+<p>完成条件：实现计划第 8 节的手算结果精确一致；同源重复事件不影响账户；重建账本与原状态逐项一致。</p>
+<h3>T04 RQAlpha 适配和受限回测</h3>
+<p>估计 3–5 人日。产物：CanonicalDataSource、策略桥接器、成交/公司行动事件转换、引擎差异报告。</p>
+<ul>
+<li>仅从指定 snapshot 取数据；默认 bundle 只用于独立 smoke test。</li>
+<li>先缓存 D 目标，到 D+1 日终执行；禁止 signal callback 访问 D+1 bar。</li>
+<li>Planner/风险共用；买入不使用同日卖出资金；未完成目标按登记政策延续。</li>
+<li>配置税费/滑点/涨跌停/量限制；锁定实际引擎版本和有效参数，保存 requested/effective 两份配置。</li>
+<li>核验引擎股利税、送转、退市与标准账本的差异，必要时用 Mod 修正。</li>
+<li>在 5–10 日合成路径上逐笔、逐日比较独立账本和引擎账户；不是只比最终收益。</li>
+<li>验证 paper 跨日状态恢复；若需重放，则冻结每日输入与订单并验证已有事件前缀。检查点与账本提交中断后能恢复，不能重复入账或改写已发布的模拟记录。</li>
+</ul>
+<p>完成条件：时点突变、T+1、费用、公司行动、受限成交全部通过；不支持的事件使 run 为 INVALID，不能输出可发布业绩。</p>
+<h3>T05 组合规划和四层风控</h3>
+<p>估计 2–3 人日。产物：allocator、planner、risk decisions、暂停/恢复命令。</p>
+<ul>
+<li>ETF 和股票各自目标先聚合，费用和现金在账户层约束；基准可单独配置。</li>
+<li>目标差额扣除已登记未完成订单；整手取整后复核限价与费用。</li>
+<li>风险规则只能返回有解释的通过/阻断/复核，所有缩量都生成新计划。</li>
+<li>实现数据不齐、流动性不足、重复委托、账户未知、阈值超限、恢复流程。</li>
+<li>机器故障、净值风险和主动减仓的处置不要混成“全部市价清仓”。</li>
+</ul>
+<p>完成条件：每项约束有反例测试；两个策略同时想买入时不能超用现金；暂停后重启仍暂停；对账未通过时不发布新买单。</p>
+<h3>T06 人工订单和导入对账</h3>
+<p>估计 2–4 人日。产物：plan.json/csv/html、broker mapping、四类 CSV importer、对账报告。</p>
+<ul>
+<li>把导出、人工提交、券商确认、成交、撤单和未知状态区分。</li>
+<li>通用 CSV + 一种实际券商格式；没有真实样例先保留待映射状态。</li>
+<li>import preview → 原子 apply；成交编号作用域和重复导出测试。</li>
+<li>部分成交/晚到费用/计划外交易/未知订单/撤单期间成交都入事件账本。</li>
+<li>同一输入重复导出同一 plan；账户变化生成新版本，旧清单明确作废。</li>
+<li>导入 orders、fills、cash_movements 和 account_snapshot 后统一核对。</li>
+</ul>
+<p>完成条件：操作人按 README 演练一次计划与两次部分成交导入；重复导入不重复计账，未知订单不会生成替代买单，三方差异可追踪到原始行。</p>
+<h3>T07 两条策略和研究基准</h3>
+<p>估计 1–2 人日。产物：两个纯策略、被动基准、预登记参数、正式实验配置。</p>
+<ul>
+<li>实现 ETF 120 日正趋势前二与股票流动性前 300、60 日低波动前五。</li>
+<li>覆盖不足窗口、非调仓日、空池、并列排序、退市历史、资金不足一手。</li>
+<li>所有参数显式配置，策略不直接访问外部网络和数据库。</li>
+<li>使用真实全量可投资历史做正式研究；固定 ETF 清单的条件选择偏差写入报告。</li>
+<li>压力成本、延迟、小本金情景只评价预登记变化，不自动“找最优”。</li>
+</ul>
+<p>完成条件：相同输入输出一致；改变 D+1 数据不改变 D 信号；新增策略仅实现同一契约可执行。</p>
+<h3>T08 运行记录评估与报告</h3>
+<p>估计 1–2 人日，可先定义产物 schema。产物：manifest、metrics、HTML、实验索引。</p>
+<ul>
+<li>每个 run 记录 snapshot、代码、依赖、费率、规则、风险、策略、初始账户和执行政策。</li>
+<li>报告区分合成/真实历史/paper/manual，显示代理成交和全部限制。</li>
+<li>保存失败实验，封存集独立权限；研究进程不能因为拿到路径就读封存数据。</li>
+<li>统一净值、资金流、换手和基准定义；费用分别显示。</li>
+<li>输出未来 harness 的 evaluate 入口，首版不接 LLM 自动下单。</li>
+</ul>
+<p>完成条件：任意一个报告可追溯并重放；改费率或 snapshot 后不会误命中旧缓存；报告无虚构成交/收益。</p>
+<h3>T09 定时运行备份与集成故障</h3>
+<p>估计 2–3 人日。产物：daily CLI、OS 调度例子、备份恢复 runbook、集成证据。</p>
+<ul>
+<li>日历驱动，锁与幂等 job，数据未齐/错过时间产生清晰状态。</li>
+<li>本地账户单写者，研究并发隔离，备份调用一致性 API。</li>
+<li>注入进程中断、导入中断、磁盘不足、manifest 未发布、重复任务和晚到回报。</li>
+<li>从备份重建并重放源文件，核对计划/事件/现金/持仓。</li>
+<li>完成离线 demo 一条命令以及真实数据端到端用例。</li>
+<li>增加持续 paper 的重复日运行、重启、历史数据修订和错过调仓日演练；事后生成的订单不能混入前瞻模拟成绩。</li>
+<li>实现 daily run、status 和最新日报入口；严格先结算旧事实并对账，再产生未来目标。状态区分任务缺失、数据等待、交割待确认和休市，不让昨日成功页面掩盖今日故障。</li>
+</ul>
+<p>完成条件：无重复资金影响、无错误计划自动补发；恢复步骤由未参与实现的操作者也能照做。</p>
+<h3>T10 持续 paper 和交接</h3>
+<p>时间取决于市场日历。产物：连续运行日志、调仓演练、已知限制、启用人工账户清单。</p>
+<ul>
+<li>真实新数据逐日进入，跨周末/假期正确处理。</li>
+<li>至少演练两个策略共同调仓、部分成交、一次未知委托和一次恢复。</li>
+<li>更新用户券商导出映射和实际费率，核实报告义务，初始化账户/风险配置。</li>
+<li>策略审批和系统审批分开记录；可以交付稳定系统但不建议启用主动策略。</li>
+<li>按每日操作手册演练普通日、D/D+1/D+2 调仓、交割单晚到、错过执行窗口和异常恢复；用户无需读源代码即可判断下一步。</li>
+</ul>
+<p>完成条件：README、数据字典、ADR、命令和输出路径可独立使用；未实测部分逐项列出，不以“基本完成”遮盖。</p>
+</section><section id="tasks-4" class="doc-section"><h2>4 必须纳入的验收案例</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>编号</th>
+<th>输入或故障</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>G01</td>
+<td>D+1 价格改为原来十倍</td>
+<td>D 信号/数量不变，D+1 成交成本或拒单改变</td>
+</tr>
+<tr>
+<td>G02</td>
+<td>某股现在退市，但历史在候选池</td>
+<td>历史仍存在；不能用今天状态剔除</td>
+</tr>
+<tr>
+<td>G03</td>
+<td>不同源 vol/amount 单位不同</td>
+<td>标准表相同，错误单位触发检查</td>
+</tr>
+<tr>
+<td>G04</td>
+<td>昨日买入与今日买入混合</td>
+<td>今日仅前者可卖，另扣已冻结卖单</td>
+</tr>
+<tr>
+<td>G05</td>
+<td>股票 0.01、ETF 0.001 tick；买零股</td>
+<td>价格/买入单位按品种校验；已有卖出零股按规则处理</td>
+</tr>
+<tr>
+<td>G06</td>
+<td>停牌、一字涨停买、一字跌停卖</td>
+<td>不产生理想成交；持仓继续估值带标记</td>
+</tr>
+<tr>
+<td>G07</td>
+<td>分红登记、除息、到账日期不同</td>
+<td>权益/应收/现金只记录一次，没有重复收益</td>
+</tr>
+<tr>
+<td>G08</td>
+<td>送转后新增股份晚于除权日可卖</td>
+<td>数量和可卖数量分开，到账前不提前卖</td>
+</tr>
+<tr>
+<td>G09</td>
+<td>持股不足月、超过月不足年、超过年后卖出</td>
+<td>税务批次差异正确；ETF 不误用个股规则</td>
+</tr>
+<tr>
+<td>G10</td>
+<td>一单三次成交，一笔费用晚到</td>
+<td>最低佣金不重复，费用调整有证据</td>
+</tr>
+<tr>
+<td>G11</td>
+<td>两种导出文件含同一成交</td>
+<td>跨文件去重，不只检查文件哈希</td>
+</tr>
+<tr>
+<td>G12</td>
+<td>两笔真实成交价格数量相同</td>
+<td>不会被错误合并</td>
+</tr>
+<tr>
+<td>G13</td>
+<td>导出后人已提交但未记录委托号</td>
+<td>UNKNOWN，不能自动重发</td>
+</tr>
+<tr>
+<td>G14</td>
+<td>撤单回报前又有部分成交</td>
+<td>成交入账，剩余撤单状态可核对</td>
+</tr>
+<tr>
+<td>G15</td>
+<td>人工交易了清单外标的</td>
+<td>记 EXTERNAL 并改变真实账户，产生复核</td>
+</tr>
+<tr>
+<td>G16</td>
+<td>入金 10,000 元</td>
+<td>净资产增加，策略收益不虚增</td>
+</tr>
+<tr>
+<td>G17</td>
+<td>导入一半时进程退出</td>
+<td>全部未提交或全部提交，重跑幂等</td>
+</tr>
+<tr>
+<td>G18</td>
+<td>Snapshot 文件写到一半</td>
+<td>对外不可见，旧快照可继续研究</td>
+</tr>
+<tr>
+<td>G19</td>
+<td>引擎遇到退市/未知公司行动</td>
+<td>无最后价假卖；按已支持政策处理或 INVALID</td>
+</tr>
+<tr>
+<td>G20</td>
+<td>ETF 与股票同时占满可用资金</td>
+<td>聚合后约束现金，不能各按完整本金买入</td>
+</tr>
+<tr>
+<td>G21</td>
+<td>当日卖出获得资金</td>
+<td>v1 不用于当日新买单，次日对账后再开放</td>
+</tr>
+<tr>
+<td>G22</td>
+<td>当前行业/财报修订值被喂给旧日期</td>
+<td>无旧版本证据则拒绝或标不支持，不能假造 PIT</td>
+</tr>
+<tr>
+<td>G23</td>
+<td>风控暂停后程序重启</td>
+<td>继续暂停，修复/核对/显式恢复后才出新单</td>
+</tr>
+<tr>
+<td>G24</td>
+<td>恢复备份并重放相同 imports</td>
+<td>与原账本经济资产、持仓、事件计数一致</td>
+</tr>
+<tr>
+<td>G25</td>
+<td>合成示例完成但真实数据 token 缺失</td>
+<td>demo 通过，真实数据验收仍为 NOT_TESTED</td>
+</tr>
+<tr>
+<td>G26</td>
+<td>RQAlpha 默默改撮合配置</td>
+<td>requested/effective 不一致被检测；延迟语义测试仍须通过</td>
+</tr>
+<tr>
+<td>G27</td>
+<td>年度/假日/月末碰到非交易日</td>
+<td>按交易所日历，不能周末发过期计划</td>
+</tr>
+<tr>
+<td>G28</td>
+<td>已导出旧计划后账户被外部成交改变</td>
+<td>旧计划作废，新计划含新账户 hash，不累计重复目标</td>
+</tr>
+<tr>
+<td>G29</td>
+<td>paper 连续十日运行与第五日重启后续跑</td>
+<td>订单、事件、现金、持仓和净值一致</td>
+</tr>
+<tr>
+<td>G30</td>
+<td>同一 paper 交易日执行两次</td>
+<td>无重复成交、费用或公司行动入账</td>
+</tr>
+<tr>
+<td>G31</td>
+<td>供应商修订过去行情，paper 继续运行</td>
+<td>已发布事件不被覆盖；新研究另建快照，历史差异阻断复核</td>
+</tr>
+<tr>
+<td>G32</td>
+<td>模拟账户错过调仓日且没有预先冻结订单</td>
+<td>不追溯成交；补做实验归入 research</td>
+</tr>
+<tr>
+<td>G33</td>
+<td>模拟事件试图写入 manual 账户或调用实盘 adapter</td>
+<td>模式和账户隔离检查拒绝，真实状态不改变</td>
+</tr>
+<tr>
+<td>G34</td>
+<td>昨日日报成功但今日预期任务未运行</td>
+<td>status/latest 明确显示有效日期与任务遗漏，不显示今日正常</td>
+</tr>
+<tr>
+<td>G35</td>
+<td>D 日旧成交或公司行动改变现金持仓，D 盘后生成新目标</td>
+<td>先结算并对账，未来计划绑定更新后的账户 hash，不能使用旧账户</td>
+</tr>
+<tr>
+<td>G36</td>
+<td>交易所休市日触发 daily run</td>
+<td>NOOP_MARKET_CLOSED，允许报告/备份，不创建假成交或过期执行单</td>
+</tr>
+<tr>
+<td>G37</td>
+<td>manual 成交已到，交割费用或账户快照未到</td>
+<td>对账为 PENDING；不填零费用或声称完成，不发布新可执行计划</td>
+</tr>
+<tr>
+<td>G38</td>
+<td>人工错过执行窗口且当日旧单未执行</td>
+<td>旧单过期并核查委托；后续根据新状态重算，不直接复用</td>
+</tr>
+<tr>
+<td>G39</td>
+<td>daily run 与对应已定义低层步骤处理相同输入</td>
+<td>事件、账户和计划一致；paper step 共用编排，无重复业务逻辑</td>
+</tr>
+</tbody></table></div>
+</section><section id="tasks-5" class="doc-section"><h2>5 每个任务的完成报告模板</h2>
+<pre><code class="language-text">任务：
+代码/配置版本：
+输入数据类型与 snapshot：
+实际执行命令：
+已通过用例：
+未通过或未测试：
+输出文件：
+已知局限与对后续任务的影响：
+是否包含真实账户操作：否（首版开发默认）
+</code></pre>
+<p>T11 的自动交易、PIT 财务和 AI harness 不得混入首版完成度。后续切换只增加 adapter 与相应验证，保留相同账户事件、风险和研究产物。</p>
+</section></article><article class="panel" data-panel="research" hidden><section id="research-0" class="intro">
+<p>调研日期：2026-10-04。本文补充原 HANDOFF.md 和 a-share-quant-guide.html，重点是从“候选工具介绍”推进到“可以验证的工程决策”。原报告保留在 /Users/jingminhao/quant-projects。本轮没有安装框架、购买数据、执行策略或交易。</p>
+<p>证据分四种：官方文档事实、已读的固定版本源码、原调研已核实但本轮未重读的材料、本项目的设计判断。GitHub star 只是采用和关注的信号，不证明代码正确或策略获利。</p>
+</section><section id="research-1" class="doc-section"><h2>1 相对原调研补充了什么</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>原调研已有</th>
+<th>本轮新增</th>
+<th>对实现的改变</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>建议 ETF 优先</td>
+<td>用户确认 ETF 和个股首版都要</td>
+<td>个股历史状态、税务批次和公司行动变为首版要求</td>
+</tr>
+<tr>
+<td>Parquet + DuckDB + SQLite</td>
+<td>查询与事务的并发边界、manifest 和不可变分区、恢复验证</td>
+<td>多 agent 研究不能并发写同一个交易库</td>
+</tr>
+<tr>
+<td>优先评估 RQAlpha</td>
+<td>核对当前日线撮合、红利税和退市默认行为</td>
+<td>先做窄集成试验，再以明确 Mod 适配</td>
+</tr>
+<tr>
+<td>支持人工执行</td>
+<td>区分导出/提交/成交/未知，四类 CSV 与三方核对</td>
+<td>人工执行仍有 OMS、幂等和状态机</td>
+</tr>
+<tr>
+<td>Tushare 候选</td>
+<td>历史 ST、股票列表、ETF 涨跌停、分红字段和更新时间</td>
+<td>按整个策略的数据需求购买与验收</td>
+</tr>
+<tr>
+<td>未来避免过拟合</td>
+<td>holdout 权限、完整实验列表、候选包标准</td>
+<td>以后换 harness 不重写账户与评估流程</td>
+</tr>
+<tr>
+<td>模块化方向</td>
+<td>10 个核心边界和版本化载荷</td>
+<td>替换数据商/策略/引擎有具体迁移路径</td>
+</tr>
+<tr>
+<td>通用实施步骤</td>
+<td>T00–T10 任务依赖、G01–G28 验收</td>
+<td>agent 可逐项交付和报告未验证事项</td>
+</tr>
+</tbody></table></div>
+</section><section id="research-2" class="doc-section"><h2>2 框架比较</h2>
+<p>快照来自各主仓 GitHub API，完整 metadata 与 commit 在 research/github-snapshot.json；这是读取仓库时的默认分支快照，不是已验证的安装版本。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>关注规模与快照</th>
+<th>适合复用的部分</th>
+<th>首版取舍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ricequant/rqalpha</td>
+<td>6,807 stars；0d98ade；2026-09-24 提交</td>
+<td>A 股事件回测、账户、Mod、自有数据源</td>
+<td>优先验证，许可和交易语义必须处理</td>
+</tr>
+<tr>
+<td>vnpy/vnpy</td>
+<td>45,682；f6e3035；2026-10-04</td>
+<td>OrderData/TradeData、OmsEngine、gateway 分层</td>
+<td>借鉴边界；人工执行首版不引入 GUI 和多个常驻交易模块</td>
+</tr>
+<tr>
+<td>microsoft/qlib</td>
+<td>49,124；be72549；2026-09-16</td>
+<td>因子与模型工作流、配置、记录器</td>
+<td>ML/harness 扩展首选之一，非人工交易账本核心</td>
+</tr>
+<tr>
+<td>microsoft/RD-Agent</td>
+<td>14,836；484776c；2026-09-23</td>
+<td>自动研究和候选生成，与 Qlib 场景相连</td>
+<td>后续研究环境，不承担交易执行权</td>
+</tr>
+<tr>
+<td>QuantConnect/Lean</td>
+<td>21,854；705b955；2026-10-02</td>
+<td>模块化事件引擎、现实模型抽象</td>
+<td>全球多资产扩展候选；对本次 A 股低频任务的适配与 C#/.NET 栈成本较高</td>
+</tr>
+<tr>
+<td>nautechsystems/nautilus_trader</td>
+<td>29,609；2c319bc；2026-10-04，develop</td>
+<td>Rust/Python 事件与回测/实盘结构</td>
+<td>值得借鉴；本轮未核实可直接覆盖国内券商及全部 A 股规则</td>
+</tr>
+<tr>
+<td>fasiondog/hikyuu</td>
+<td>3,543；daeb2c7；2026-09-30</td>
+<td>C++/Python 量化研究与回测</td>
+<td>RQAlpha 不适配或授权不合适时的候选，仍需同一组验收</td>
+</tr>
+</tbody></table></div>
+<p>来源：<a target="_blank" rel="noopener noreferrer" href="https://github.com/ricequant/rqalpha">RQAlpha</a>、<a target="_blank" rel="noopener noreferrer" href="https://github.com/vnpy/vnpy">vn.py</a>、<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/qlib">Qlib</a>、<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/RD-Agent">RD-Agent</a>、<a target="_blank" rel="noopener noreferrer" href="https://github.com/QuantConnect/Lean">LEAN</a>、<a target="_blank" rel="noopener noreferrer" href="https://github.com/nautechsystems/nautilus_trader">NautilusTrader</a>、<a target="_blank" rel="noopener noreferrer" href="https://github.com/fasiondog/hikyuu">Hikyuu</a>。</p>
+<p>原报告里的 vectorbt、Backtrader、backtesting.py 继续可作研究候选。本轮不重复列长榜单：向量化探索不能替代 A 股交易限制，通用引擎需要证明其市场适配，换引擎本身也解决不了历史数据和人工对账问题。这是针对当前需求的取舍，不是项目质量排名。</p>
+<p>为何不直接选一个全包框架：你的数据源、harness 和策略都会迭代，而人工成交需要从券商事实重建账户。把这些核心状态绑在某个框架的 context 中，会使一次框架迁移变成重写整套系统。因此使用成熟引擎计算仿真，同时维护少量业务契约与实际账户账本。</p>
+</section><section id="research-3" class="doc-section"><h2>3 读源码后需要写入验收的事项</h2>
+<h3>3.1 RQAlpha 的日频撮合</h3>
+<p>在已读取 commit 中，sys_simulation/mod.py 的 60–63 行把 1d 下的 NEXT_BAR_OPEN 改为 CURRENT_BAR_CLOSE，并发出警告。API 参数名字不足以保证执行时间顺序。必须存储前一日目标、下一日才加载执行，并断言实际成交日。<a target="_blank" rel="noopener noreferrer" href="https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/rqalpha/mod/rqalpha_mod_sys_simulation/mod.py#L60">固定版本源码</a></p>
+<h3>3.2 账户默认项不等于个人实盘口径</h3>
+<p>sys_accounts 的配置默认 dividend_tax_enabled=False、cash_return_by_stock_delisted=True。源码中已有股利税与账户处理可复用，但不能把默认回测当作已扣个人税、真实退市回收的收益。计划要求逐项验收，而非自行重写全部账户。<a target="_blank" rel="noopener noreferrer" href="https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/rqalpha/mod/rqalpha_mod_sys_accounts/__init__.py">配置源码</a> · <a target="_blank" rel="noopener noreferrer" href="https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/rqalpha/mod/rqalpha_mod_sys_accounts/position_model.py">账户源码</a></p>
+<h3>3.3 接入 Tushare 不只是一段 K 线代码</h3>
+<p>官方扩展文档提供 DataSource/Mod 的入口，并有旧版 get_k_data 的例子。本项目还要映射证券定义、日历、状态、分红、送转和日期边界；示例不是当前 Tushare Pro 的完整市场数据适配器。<a target="_blank" rel="noopener noreferrer" href="https://rqalpha.readthedocs.io/zh-cn/latest/development/data_source.html">扩展数据源</a></p>
+<h3>3.4 许可证信息要读完整文本</h3>
+<p>该 commit 的 pyproject metadata 与 LICENSE 的使用边界不能混为一谈；LICENSE 对商业用途另有限制。本文不判断个人真实投资必然符合非商业用途。实施 agent 需记录确认结果或替代方案，不能复用未知授权代码。<a target="_blank" rel="noopener noreferrer" href="https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/LICENSE">LICENSE</a></p>
+<h3>3.5 vn.py 结构可借鉴但不自动等于持久账本</h3>
+<p>已读 OmsEngine、BaseGateway、OrderData、TradeData。它们支持本项目对事件、查询、订单与成交分离的设计。是否跨重启完整持久化、是否满足券商 CSV 对账，要由具体应用层实现并验证，不能从“有 OMS”推导出“账就不会错”。<a target="_blank" rel="noopener noreferrer" href="https://github.com/vnpy/vnpy/blob/f6e303547b2de75a3a5239c9ec9b9c739656ec8d/vnpy/trader/engine.py">engine.py</a></p>
+<p>以上源文件保存在 research/source-cache，仅供审阅。缓存不是本项目运行依赖；不直接把源文件复制进产品冒充自研。</p>
+</section><section id="research-4" class="doc-section"><h2>4 数据调研的新结论</h2>
+<p>Tushare 对首版价格类策略值得优先试验，但“API 存在”不能替代历史全覆盖验收。该选择基于公开接口、预算和你较强的 Python 能力；若整理历史状态耗时很高，付费使用更完整数据可能更划算。</p>
+<p>值得特别注意的官方字段：</p>
+<ul>
+<li>daily 的 pre_close 标注为除权参考昨收，不能直接等同上一行未复权 close；vol 是手、amount 是千元；当前文档还提供盘后成交量/额字段。应确认总量与盘后量的包含关系，不能重复相加。<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=27">股票日线</a></li>
+<li>dividend 同时提供 cash_div（税后）与 cash_div_tax（税前），并区分 ex_date、pay_date、div_listdate。采用税前值再按账户计算税时，不得误用税后值重复扣税；每日更新时段写为 20–21 点，日常任务应等待相关数据齐备。<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=103">分红送股</a></li>
+<li>bak_basic 文档起点为 2016 年；其中包含的财务衍生字段不能因为与历史日期同表就自动视为完整 PIT 财报。<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=262">股票历史列表</a></li>
+<li>stock_st 按日期提供历史列表，但提醒过早历史无法补齐，并给出约 09:20 的当日更新时间。历史查询能力与真正保留全部公告修订仍是两回事。<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=397">ST 列表</a></li>
+<li>etf_limit 已有独立接口，不必机械把股票涨跌停接口套到所有 ETF；历史起点和终止上市 ETF 覆盖仍需 probe。<a target="_blank" rel="noopener noreferrer" href="https://tushare.pro/document/2?doc_id=491">ETF 限价</a></li>
+</ul>
+<p>RQData 的 get_pit_financials_ex 带 date 与 statements，可用于按查询时点和报表版本取值；这为后续质量/价值因子提供更合适的调查入口。具体数据覆盖、授权与报价尚未验证。<a target="_blank" rel="noopener noreferrer" href="https://www.ricequant.com/doc/rqdata/python/stock-mod.html">RQData</a></p>
+<p>AKShare 继续适合抽样核对或学习；本轮不建议它成为关键实盘数据唯一来源。免费源可以有用，关键是失败/修订/单位/许可有明确边界，而不是把“免费”当稳定性承诺。</p>
+<p>个人数据预算建议拆成三个情景而非先花满：已有机器 + 日线试验约按官方 500–1,000 元年费档探测；PIT/更完整服务询价后再决定；分钟数据仅在执行误差妨碍判断时购买所需范围。首版人工执行无需先买 Windows 机器。20 万本金上每年 3,000 元固定费相当于 1.5%，应单独显示。</p>
+</section><section id="research-5" class="doc-section"><h2>5 为什么是 Parquet DuckDB SQLite</h2>
+<p>本项目选型的依据是访问模式：行情和因子是批量扫描、可重建，账户是小量事务、必须可靠。前者使用列式文件，后者使用事务库。不需要把所有东西塞进同一种数据库。</p>
+<p>DuckDB 的本地进程内模式有单进程写入边界；官方也介绍新的多进程方案，但个人日线首版没有引入其复杂度的收益。SQLite WAL 允许读写协作但一次仅一个写者，且要求同机共享内存。本设计因此将研究并行与账户写入分离。<a target="_blank" rel="noopener noreferrer" href="https://duckdb.org/docs/current/connect/concurrency">DuckDB</a> · <a target="_blank" rel="noopener noreferrer" href="https://www.sqlite.org/wal.html">SQLite</a></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>未来变化</th>
+<th>怎么迁移</th>
+<th>不需要改的部分</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tushare → RQData</td>
+<td>新 provider，标准表对齐、重叠样本差异报告、新 snapshot</td>
+<td>策略、账本、风险与标准报告</td>
+</tr>
+<tr>
+<td>本地 Parquet → 对象存储</td>
+<td>Snapshot resolver 改 URI 与缓存；保持文件哈希和 schema</td>
+<td>策略与实验 spec</td>
+</tr>
+<tr>
+<td>SQLite → PostgreSQL</td>
+<td>LedgerStore 新实现、迁移事件并校验投影，改变并发模型</td>
+<td>订单/成交事件语义</td>
+</tr>
+<tr>
+<td>RQAlpha → 其他引擎</td>
+<td>BacktestEngine adapter，复跑 golden suite 和同源对照</td>
+<td>策略/Planner/风险契约；历史 run 保留旧环境</td>
+</tr>
+<tr>
+<td>规则策略 → Qlib 模型</td>
+<td>固定训练制品，转标准目标/信号，进入同一评估器</td>
+<td>实际账户与人工执行</td>
+</tr>
+<tr>
+<td>手工 CSV → xtquant</td>
+<td>增加券商查询和回调适配器及 UNKNOWN 恢复</td>
+<td>OrderIntent、事件账本和对账规则</td>
+</tr>
+<tr>
+<td>CLI → 新 harness</td>
+<td>新 CandidateArtifact/ExperimentSpec 生产者</td>
+<td>公共评估入口和上线门槛</td>
+</tr>
+</tbody></table></div>
+<p>迁移前后收益差异需要解释，不以“接口能调用”作为兼容成功；例如公司行动、收盘时间和费率口径的变化都可能改变结果。</p>
+</section><section id="research-6" class="doc-section"><h2>6 Harness 如何进一步比较</h2>
+<p>Qlib 的 qrun 已提供数据处理、模型训练和评估的配置式工作流及产物跟踪，适合未来 ML。官方示例资金为 1 亿元、组合约 50 只，不能直接作为你的 10–30 万执行配置。<a target="_blank" rel="noopener noreferrer" href="https://qlib.readthedocs.io/en/latest/component/workflow.html">官方 workflow</a></p>
+<p>RD-Agent 的当前 README 说明 Linux 支持要求，多数场景需 Docker；量化路径明确与 Qlib 相关。因此 Mac 上的首版交易系统不应强制依赖它。先在单独环境研究，再将候选送回公共评估入口。<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/RD-Agent">主仓</a> · <a target="_blank" rel="noopener noreferrer" href="https://rdagent.readthedocs.io/en/latest/scens/quant_agent_fin.html">场景</a></p>
+<p>AgentQuant 有失败记忆、研究运行记录与显式切分的工程思路，但其 README 也明确部分优化结果基于 mock fitness。可借鉴机制，不能当作已通过实盘检验的量化基础设施。<a target="_blank" rel="noopener noreferrer" href="https://github.com/OnePunchMonk/AgentQuant">主仓</a></p>
+<p>AlphaAgent 当前主仓、论文版本与数据层授权需要一起审查。原调研已阅读部分 Tushare 财务展开代码，本轮未将该代码跑过，也未因论文表现给出高可信背书。QuantHarness 则偏高频价格分析，与当前月度调仓需求不匹配。<a target="_blank" rel="noopener noreferrer" href="https://github.com/RndmVariableQ/AlphaAgent">AlphaAgent</a> · <a target="_blank" rel="noopener noreferrer" href="https://github.com/Y-Research-SBU/QuantHarness">QuantHarness</a></p>
+<p>后续试验设计建议：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>统一测试方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据接入</td>
+<td>同一 snapshot、同一可见字段，严禁各工具默认下载不同源</td>
+</tr>
+<tr>
+<td>决策质量</td>
+<td>10 个预登记研究任务，包括“应发现无效”的负对照</td>
+</tr>
+<tr>
+<td>评估一致</td>
+<td>相同本金、费用、延迟、候选池与风险；公共引擎复核</td>
+</tr>
+<tr>
+<td>复现</td>
+<td>相同候选代码/数据/配置重复运行，比较目标、成交、指标</td>
+</tr>
+<tr>
+<td>搜索污染</td>
+<td>提案只看开发/验证反馈，封存集单独解锁</td>
+</tr>
+<tr>
+<td>成本</td>
+<td>API 费用、总耗时、人工修改次数、失败后能否续跑</td>
+</tr>
+<tr>
+<td>权限</td>
+<td>无账户 token、无法改真实账本或发布交易计划</td>
+</tr>
+<tr>
+<td>可退出</td>
+<td>产物能导出为规范策略/因子包，不被工具私有数据库锁住</td>
+</tr>
+</tbody></table></div>
+<p>不必为了比较先搭四套完整系统。先实现统一评估入口，再挑 Qlib/RD-Agent 一条路径和另一候选做窄试验即可。</p>
+</section><section id="research-7" class="doc-section"><h2>7 研究报告怎样为策略提供依据</h2>
+<p>原报告已核实的海通 ETF 风格轮动研报可以继续作为“将观点翻译成规则”的案例；本轮重访 PDF 未成功，没有复核其原报收益。它使用宏观和中观信息，若照搬会引入发布时间、修订与数据成本，因此没有作为第一条必须复现的策略。<a target="_blank" rel="noopener noreferrer" href="https://www.htsec.com/jfimg/colimg/upload/20240430/1714455637218041379.pdf">海通原始材料</a></p>
+<p>本轮读取了 AQR 的趋势与低 beta 研究介绍、回测过拟合论文，以及 RD-Agent-Quant 摘要。它们分别支持研究动机、实验纪律和自动研究范式，不支持本项目的参数或收益承诺。<a target="_blank" rel="noopener noreferrer" href="https://www.aqr.com/Insights/Research/Journal-Article/Time-Series-Momentum">趋势</a> · <a target="_blank" rel="noopener noreferrer" href="https://www.aqr.com/Insights/Research/Journal-Article/Betting-Against-Beta">低 beta</a> · <a target="_blank" rel="noopener noreferrer" href="https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf">回测过拟合</a> · <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2505.15155">RD-Agent-Quant</a></p>
+<p>每次借鉴研报，执行 agent 应输出六项：经济假设、可观测数据、信息可用时刻、机械规则、交易成本/可成交假设、发布后的检验区间。无法把这六项写清楚，就先作为研究线索，不直接进入策略库。</p>
+</section><section id="research-8" class="doc-section"><h2>8 交易接入的后续路线</h2>
+<p>当前用户选择人工执行，所以首版只研究自动接入边界，不开通或连接账户。xtquant 官方文档提供报撤单、资产/持仓/订单/成交查询及回调，这与标准 ExecutionAdapter 的未来实现相符。<a target="_blank" rel="noopener noreferrer" href="https://dict.thinktrader.net/nativeApi/xttrader.html">迅投官方文档</a></p>
+<p>SDK 的异步请求序号、券商委托编号和本系统 intent_id 是不同对象；网络超时无法天然保证 exactly-once。未来自动接入必须保留本地意图→提交→查询确认→未知恢复流程，不能调用异常就再次下单。通过 vn.py 接 gateway 也一样。</p>
+<p>是否支持 Mac/Windows、账户资产门槛、模拟环境、ETF 委托类型和当前 SDK 版本要向实际券商确认。不要因为网上存在 Python 示例就把这些条件视为满足。</p>
+</section><section id="research-9" class="doc-section"><h2>9 尚待实际执行核验</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>未决项</th>
+<th>谁在何时解决</th>
+<th>对当前工作的影响</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RQAlpha 安装/版本/真实投资授权</td>
+<td>T00，实施 agent 与用户按需确认</td>
+<td>影响引擎最终选择，不影响业务契约</td>
+</tr>
+<tr>
+<td>Tushare 实际权限与历史覆盖</td>
+<td>T00/T02，用户账号下 probe</td>
+<td>无 token 仍可实现 CSV 与合成闭环，真实数据验收不可通过</td>
+</tr>
+<tr>
+<td>历史公司行动、退市、ETF 元信息缺漏</td>
+<td>T02/T04</td>
+<td>缺失区间或事件不能发布正式业绩</td>
+</tr>
+<tr>
+<td>用户券商导出格式</td>
+<td>T06，取得脱敏样例</td>
+<td>先实现通用 CSV；真实账户导入尚未完成</td>
+</tr>
+<tr>
+<td>个人仓位/回撤预算</td>
+<td>M4 前由用户确定</td>
+<td>paper 参数不能自动进入 manual</td>
+</tr>
+<tr>
+<td>手工操作时间是否匹配 14:50 窗口</td>
+<td>M4 前确定</td>
+<td>若改变执行政策，必须重跑压力和误差评价</td>
+</tr>
+<tr>
+<td>数据授权是否允许上传给第三方模型</td>
+<td>AI harness 试验前</td>
+<td>默认只在本地使用，不能把付费行情当公共数据发出</td>
+</tr>
+<tr>
+<td>策略有没有可实施优势</td>
+<td>M2–M4 研究与前瞻</td>
+<td>本次没有实证答案，不影响工程系统单独验收</td>
+</tr>
+</tbody></table></div>
+<p>与原报告相比，本轮完成了更多接口和源码层核查，但仍然是设计与调研完成，不能写成投资系统已部署。</p>
+</section></article><details><summary>来源索引 · 59 项</summary><ol class="sources"><li><b>R01</b> <a href="https://github.com/ricequant/rqalpha" target="_blank" rel="noopener noreferrer">RQAlpha</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R02</b> <a href="https://github.com/vnpy/vnpy" target="_blank" rel="noopener noreferrer">vn.py</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R03</b> <a href="https://github.com/microsoft/qlib" target="_blank" rel="noopener noreferrer">Qlib</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R04</b> <a href="https://github.com/microsoft/RD-Agent" target="_blank" rel="noopener noreferrer">RD-Agent</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R05</b> <a href="https://github.com/QuantConnect/Lean" target="_blank" rel="noopener noreferrer">LEAN</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R06</b> <a href="https://github.com/nautechsystems/nautilus_trader" target="_blank" rel="noopener noreferrer">NautilusTrader</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R07</b> <a href="https://github.com/fasiondog/hikyuu" target="_blank" rel="noopener noreferrer">Hikyuu</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R08</b> <a href="https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/rqalpha/mod/rqalpha_mod_sys_simulation/mod.py#L60" target="_blank" rel="noopener noreferrer">固定版本源码</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R09</b> <a href="https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/rqalpha/mod/rqalpha_mod_sys_accounts/__init__.py" target="_blank" rel="noopener noreferrer">配置源码</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R10</b> <a href="https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/rqalpha/mod/rqalpha_mod_sys_accounts/position_model.py" target="_blank" rel="noopener noreferrer">账户源码</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R11</b> <a href="https://rqalpha.readthedocs.io/zh-cn/latest/development/data_source.html" target="_blank" rel="noopener noreferrer">扩展数据源</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R12</b> <a href="https://github.com/ricequant/rqalpha/blob/0d98adefa87956e26f3e7ca5b26b5f3fc7ca834f/LICENSE" target="_blank" rel="noopener noreferrer">LICENSE</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R13</b> <a href="https://github.com/vnpy/vnpy/blob/f6e303547b2de75a3a5239c9ec9b9c739656ec8d/vnpy/trader/engine.py" target="_blank" rel="noopener noreferrer">engine.py</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R14</b> <a href="https://tushare.pro/document/2?doc_id=27" target="_blank" rel="noopener noreferrer">股票日线</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R15</b> <a href="https://tushare.pro/document/2?doc_id=103" target="_blank" rel="noopener noreferrer">分红送股</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R16</b> <a href="https://tushare.pro/document/2?doc_id=262" target="_blank" rel="noopener noreferrer">股票历史列表</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R17</b> <a href="https://tushare.pro/document/2?doc_id=397" target="_blank" rel="noopener noreferrer">ST 列表</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R18</b> <a href="https://tushare.pro/document/2?doc_id=491" target="_blank" rel="noopener noreferrer">ETF 限价</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R19</b> <a href="https://www.ricequant.com/doc/rqdata/python/stock-mod.html" target="_blank" rel="noopener noreferrer">RQData</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R20</b> <a href="https://duckdb.org/docs/current/connect/concurrency" target="_blank" rel="noopener noreferrer">DuckDB</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R21</b> <a href="https://www.sqlite.org/wal.html" target="_blank" rel="noopener noreferrer">SQLite</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R22</b> <a href="https://qlib.readthedocs.io/en/latest/component/workflow.html" target="_blank" rel="noopener noreferrer">官方 workflow</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R23</b> <a href="https://rdagent.readthedocs.io/en/latest/scens/quant_agent_fin.html" target="_blank" rel="noopener noreferrer">场景</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R24</b> <a href="https://github.com/OnePunchMonk/AgentQuant" target="_blank" rel="noopener noreferrer">主仓</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R25</b> <a href="https://github.com/RndmVariableQ/AlphaAgent" target="_blank" rel="noopener noreferrer">AlphaAgent</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R26</b> <a href="https://github.com/Y-Research-SBU/QuantHarness" target="_blank" rel="noopener noreferrer">QuantHarness</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R27</b> <a href="https://www.htsec.com/jfimg/colimg/upload/20240430/1714455637218041379.pdf" target="_blank" rel="noopener noreferrer">海通原始材料</a><span>原 HANDOFF 记载已读 PDF，本轮重访失败；未复核业绩</span></li><li><b>R28</b> <a href="https://www.aqr.com/Insights/Research/Journal-Article/Time-Series-Momentum" target="_blank" rel="noopener noreferrer">趋势</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R29</b> <a href="https://www.aqr.com/Insights/Research/Journal-Article/Betting-Against-Beta" target="_blank" rel="noopener noreferrer">低 beta</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R30</b> <a href="https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf" target="_blank" rel="noopener noreferrer">回测过拟合</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R31</b> <a href="https://arxiv.org/abs/2505.15155" target="_blank" rel="noopener noreferrer">RD-Agent-Quant</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R32</b> <a href="https://dict.thinktrader.net/nativeApi/xttrader.html" target="_blank" rel="noopener noreferrer">迅投官方文档</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R33</b> <a href="https://tushare.pro/document/2?doc_id=127" target="_blank" rel="noopener noreferrer">ETF 日线</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R34</b> <a href="https://tushare.pro/document/2?doc_id=199" target="_blank" rel="noopener noreferrer">基金因子</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R35</b> <a href="https://tushare.pro/document/2?doc_id=120" target="_blank" rel="noopener noreferrer">基金分红</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R36</b> <a href="https://tushare.pro/document/2?doc_id=290" target="_blank" rel="noopener noreferrer">权限表</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R37</b> <a href="https://jiangsu.chinatax.gov.cn/art/2023/8/28/art_8349_432258.html" target="_blank" rel="noopener noreferrer">印花税公告</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R38</b> <a href="https://www.chinatax.gov.cn/n810341/n810755/c1797427/content.html" target="_blank" rel="noopener noreferrer">股息红利税通知</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R39</b> <a href="https://www.sse.com.cn/lawandrules/sselawsrules2025/fund/trading/c/c_20260424_10817739.shtml" target="_blank" rel="noopener noreferrer">上交所通知</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R40</b> <a href="https://investor.szse.cn/lawrules/rule/trade/t20260424_620190.html" target="_blank" rel="noopener noreferrer">深交所通知</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R41</b> <a href="https://www.csrc.gov.cn/csrc/c100028/c7480577/content.shtml" target="_blank" rel="noopener noreferrer">证监会发布说明</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R42</b> <a href="https://www.sse.com.cn/lawandrules/sselawsrules2025/trade/universal/c/c_20250612_10781696.shtml" target="_blank" rel="noopener noreferrer">上交所实施细则</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R43</b> <a href="https://www.szse.cn/lawrules/rule/trade/t20250403_612770.html" target="_blank" rel="noopener noreferrer">深交所实施细则通知</a><span>只核实官方通知的标题与施行日期；具体应用需看正式附件及券商解释</span></li><li><b>R44</b> <a href="https://www.sqlite.org/backup.html" target="_blank" rel="noopener noreferrer">SQLite 备份</a><span>文档或源码审阅，不是安装、数据质量或交易验证</span></li><li><b>R45</b> <a href="https://github.com/vnpy/vnpy_paperaccount" target="_blank" rel="noopener noreferrer">PaperAccount</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li><li><b>R46</b> <a href="https://tushare.pro/document/1" target="_blank" rel="noopener noreferrer">Tushare</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li><li><b>R47</b> <a href="https://github.com/JoinQuant/jqdatasdk" target="_blank" rel="noopener noreferrer">JQData SDK</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li><li><b>R48</b> <a href="https://akshare.akfamily.xyz/introduction.html" target="_blank" rel="noopener noreferrer">AKShare</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li><li><b>R49</b> <a href="https://www.sqlite.org/whentouse.html" target="_blank" rel="noopener noreferrer">SQLite</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li><li><b>R50</b> <a href="https://www.postgresql.org/docs/current/intro-whatis.html" target="_blank" rel="noopener noreferrer">PostgreSQL</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li><li><b>R51</b> <a href="https://clickhouse.com/docs/get-started/about/intro" target="_blank" rel="noopener noreferrer">ClickHouse</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li><li><b>R52</b> <a href="https://www.aqr.com/Insights/Research/Working-Paper/Quality-Minus-Junk" target="_blank" rel="noopener noreferrer">Quality Minus Junk</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li><li><b>R53</b> <a href="https://github.com/PyPortfolio/PyPortfolioOpt" target="_blank" rel="noopener noreferrer">PyPortfolioOpt</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li><li><b>R54</b> <a href="https://github.com/dcajasn/Riskfolio-Lib" target="_blank" rel="noopener noreferrer">Riskfolio-Lib</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li><li><b>R55</b> <a href="https://pyportfolioopt.readthedocs.io/en/latest/GeneralEfficientFrontier.html" target="_blank" rel="noopener noreferrer">PyPortfolioOpt 官方文档</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li><li><b>R56</b> <a href="https://riskfolio-lib.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">Riskfolio-Lib 文档</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li><li><b>R57</b> <a href="https://github.com/vnpy/vnpy_riskmanager" target="_blank" rel="noopener noreferrer">RiskManager</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li><li><b>R58</b> <a href="https://github.com/mementum/backtrader" target="_blank" rel="noopener noreferrer">Backtrader</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li><li><b>R59</b> <a href="https://github.com/polakowo/vectorbt" target="_blank" rel="noopener noreferrer">vectorbt</a><span>Documentation reviewed; runtime, account access and financial performance not verified.</span></li></ol></details><footer>本文件是调研与实现规格。页面中的未来 CLI 命令尚未实现；没有已经验证的策略收益。<br>Markdown 源文件与执行任务包位于同目录 docs/，原调研保留在 /Users/jingminhao/quant-projects。</footer></main></div><script>
+(()=>{let active='design';const input=document.querySelector('.search');const buttons=[...document.querySelectorAll('[data-tab]')];
+function search(){const q=input.value.trim().toLowerCase();let count=0;document.querySelectorAll('[data-panel="'+active+'"] section').forEach(s=>{const visible=!q||s.textContent.toLowerCase().includes(q);s.hidden=!visible;if(visible)count++;const a=document.querySelector('[data-nav="'+active+'"] a[href="#'+s.id+'"]');if(a)a.hidden=!visible;});document.getElementById('empty').hidden=!!count;}
+function select(name,scroll=true){if(!['design','daily','plan','modules','research','tasks'].includes(name))return;active=name;document.querySelectorAll('.panel').forEach(p=>p.hidden=p.dataset.panel!==name);document.querySelectorAll('[data-nav]').forEach(n=>n.hidden=n.dataset.nav!==name);buttons.forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===name)));input.value='';search();if(scroll)window.scrollTo({top:0,behavior:'smooth'});}
+buttons.forEach(b=>b.addEventListener('click',()=>{history.replaceState(null,'','#'+b.dataset.tab);select(b.dataset.tab);}));document.querySelectorAll('[data-panel-link]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'','#'+a.dataset.panelLink);select(a.dataset.panelLink);}));input.addEventListener('input',search);
+document.getElementById('print').addEventListener('click',()=>{document.querySelectorAll('details').forEach(d=>d.open=true);window.print();});
+document.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',()=>{document.querySelectorAll('nav a.active').forEach(x=>x.classList.remove('active'));a.classList.add('active');}));
+const hash=location.hash.slice(1);if(hash){const section=document.getElementById(hash);select(hash.split('-')[0],false);if(section)setTimeout(()=>section.scrollIntoView(),20);}
+})();
+</script></body></html>
