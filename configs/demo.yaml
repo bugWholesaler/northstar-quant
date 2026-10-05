@@ -1,0 +1,8 @@
+schema_version: '1.0'
+mode: demo
+account_id: demo
+runtime: runtime/demo
+provider: csv
+scope: synthetic_sample
+availability: historical_assumption
+initial_cash: '200000'

@@ -1,0 +1,6 @@
+schema_version: '1.0'
+broker: canonical_csv
+business_id_scope: account_date_exchange
+# REQUIRED: confirm actual broker scope and map its headers before enabling manual.
+verified: false
+columns: {}

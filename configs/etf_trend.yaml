@@ -1,0 +1,9 @@
+schema_version: '1.0'
+mode: research
+account_id: research
+runtime: runtime/research
+provider: csv
+csv_directory: null
+scope: real_sample
+availability: historical_assumption
+personal_investment_engine_license_confirmed: false

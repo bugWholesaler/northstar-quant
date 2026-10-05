@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>Label</key><string>com.northstar.paper</string>
+<key>ProgramArguments</key><array><string>/bin/sh</string><string>/ABSOLUTE/REPO/tools/daily.sh</string></array>
+<key>EnvironmentVariables</key><dict><key>NORTHSTAR_REPO</key><string>/ABSOLUTE/REPO</string><key>NORTHSTAR_UV</key><string>/ABSOLUTE/uv</string></dict>
+<key>StartCalendarInterval</key><dict><key>Hour</key><integer>21</integer><key>Minute</key><integer>35</integer></dict>
+<key>StandardOutPath</key><string>/ABSOLUTE/RUNTIME/daily.log</string>
+<key>StandardErrorPath</key><string>/ABSOLUTE/RUNTIME/daily-error.log</string>
+</dict></plist>

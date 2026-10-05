@@ -1,0 +1,19 @@
+schema_version: '1.0'
+mode: manual
+account_id: manual
+runtime: runtime/manual
+provider: csv
+csv_directory: null
+scope: real_sample
+availability: observed
+# Required before export: verified fees, approved personal risk, broker mapping,
+# broker confirmation and approval of the concrete strategy version.
+fees:
+  version: REQUIRED_actual_broker_fees
+  verified: false
+risk:
+  version: REQUIRED_personal_risk_budget
+  approved: false
+broker_mapping_verified: false
+broker_confirmed: false
+strategy_approved: false

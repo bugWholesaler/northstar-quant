@@ -1,0 +1,11 @@
+schema_version: '1.0'
+mode: paper
+account_id: paper
+runtime: runtime/paper
+provider: csv
+csv_directory: null
+scope: real_sample
+availability: observed
+initial_cash: '200000'
+# Virtual money and example limits. These are not a personal investment budget.
+personal_investment_engine_license_confirmed: false

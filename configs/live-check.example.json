@@ -1,0 +1,17 @@
+{
+  "operator": "REQUIRED",
+  "checked_at": "2026-10-09T14:50:00+08:00",
+  "account_hash": "REQUIRED_CURRENT_EVENT_HASH",
+  "cash_available": "0",
+  "quotes": {
+    "600000.SH": {
+      "price": "10.00",
+      "limit_up": "11.00",
+      "limit_down": "9.00",
+      "suspended": false,
+      "st": false,
+      "delisting_period": false,
+      "sellable": 0
+    }
+  }
+}
