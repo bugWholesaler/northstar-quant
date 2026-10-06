@@ -7,11 +7,12 @@ name = "northstar-quant"
 version = "0.1.0"
 description = "Auditable local A-share research, paper and manual execution workflow"
 requires-python = ">=3.11,<3.12"
-dependencies = ["pydantic>=2.12,<3", "pyarrow>=20,<24", "duckdb>=1.4,<2", "PyYAML>=6,<7", "typer>=0.20,<1", "rqalpha==6.1.5", "numpy>=1.26,<2", "pandas>=2.2,<3", "matplotlib>=3.9,<4"]
+dependencies = ["pydantic>=2.12,<3", "pyarrow>=20,<24", "duckdb>=1.4,<2", "PyYAML>=6,<7", "typer>=0.20,<1", "rqalpha==6.1.5", "numpy>=1.26,<2", "pandas>=2.2,<3", "matplotlib>=3.9,<4", "requests>=2.31,<3"]
 
 [project.optional-dependencies]
 tushare = ["tushare>=1.4,<2"]
 baostock = ["baostock==0.9.4"]
+akshare = ["akshare==1.19.1"]
 
 [dependency-groups]
 dev = ["pytest>=8,<10", "ruff>=0.14,<1"]

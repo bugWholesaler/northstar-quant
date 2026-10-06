@@ -56,6 +56,11 @@ class SnapshotMod(AbstractMod):
 
         snapshot, tables = Store(Path(mod_config.root)).load(mod_config.snapshot_id)
         env.set_data_source(CanonicalDataSource(snapshot, tables))
+        self.previous_position = None
+        if snapshot.profile == "research_scenario":
+            from .cash_dividend_position import install_cash_dividend_position
+
+            self.previous_position = install_cash_dividend_position()
         decider = ScenarioCostDecider(
             Fees.model_validate(mod_config.fees), mod_config.cost_multiplier
         )
@@ -70,7 +75,10 @@ class SnapshotMod(AbstractMod):
         env.event_bus.add_listener(EVENT.POST_SYSTEM_INIT, effective)
 
     def tear_down(self, code, exception=None):
-        pass
+        if getattr(self, "previous_position", None) is not None:
+            from .cash_dividend_position import restore_cash_dividend_position
+
+            restore_cash_dividend_position(self.previous_position)
 
 
 def load_mod():

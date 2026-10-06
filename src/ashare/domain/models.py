@@ -103,6 +103,8 @@ class Bar(Contract):
     volume: int = Field(ge=0)
     amount: Decimal = Field(ge=0)
     factor: Decimal = Field(gt=0)
+    research_close: Decimal | None = Field(default=None, gt=0)
+    adjustment_basis: Literal["factor", "vendor_research_close"] = "factor"
     suspended: bool = False
     st: bool = False
     delisting_period: bool = False
@@ -116,6 +118,10 @@ class Bar(Contract):
     def range_check(self):
         if not self.low <= min(self.open, self.close) <= max(self.open, self.close) <= self.high:
             raise ValueError("invalid OHLC range")
+        if self.adjustment_basis == "vendor_research_close" and (
+            self.research_close is None or self.factor != 1
+        ):
+            raise ValueError("vendor research price requires explicit price and identity factor")
         if self.limit_down > self.limit_up:
             raise ValueError("invalid price limits")
         if self.availability_basis == "observed" and self.available_at < self.observed_at:
@@ -158,6 +164,7 @@ class Snapshot(Contract):
     quality: dict[str, Any]
     availability: Literal["historical_assumption", "observed"]
     transform_version: str = "1.0"
+    profile: Literal["verified", "research_scenario"] = "verified"
 
 
 class TargetPortfolio(Contract):
@@ -254,7 +261,9 @@ class AccountView(Contract):
 
 
 class ExperimentSpec(Contract):
-    strategy: Literal["combined", "etf_trend", "stock_lowvol", "buy_hold", "stock_equal"]
+    strategy: Literal[
+        "combined", "etf_trend", "stock_lowvol", "buy_hold", "stock_equal", "combined_passive"
+    ]
     snapshot_id: str
     start: date
     end: date

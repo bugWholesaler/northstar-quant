@@ -47,6 +47,18 @@ uv run --extra baostock ashare data sync --config configs/baostock.yaml
 
 `RESEARCH_PREVIEW_READY` / `executable=false` 是研究预览状态，完整交易 snapshot 尚未发布。具体命令、覆盖和未验证项见 [免费数据快速开始](docs/BAOSTOCK_QUICKSTART.md) 与 [实测 ADR](docs/adr/0002-baostock-free-learning.md)。
 
+## 免费真实数据研究回测
+
+已经实际跑通固定 20 股/3 ETF、2026-01-30 至 2026-09-30 的日频研究情景。复用 RQAlpha，逐日对照独立账本；现金分红使用明确的固定税务情景，执行输入仍未达到实盘级核验。
+
+```sh
+uv sync --frozen --extra baostock
+uv run --extra baostock ashare research prepare-free --config configs/free_backtest.yaml
+uv run ashare research trial-free --config configs/free_backtest.yaml --snapshot SNAPSHOT_ID
+```
+
+本次组合回报代理 -0.10%、最大回撤 8.83%；同样本被动 -0.07%。模型尚未完整计入 ETF 现金分红，真实完整净收益仍未知。免费并非回测障碍；目前结果也没有证明策略有效。来源、条件、11 个固定案例及复现命令见 [首次真实回测说明](docs/REAL_BACKTEST_QUICKSTART.md)。
+
 ## 接入自己的数据
 
 [数据字典](docs/DATA_DICTIONARY.md) 说明 `instruments.csv`、`calendar.csv`、`bars.csv`、`actions.csv` 四张规范表。`fixtures/synthetic/` 提供可运行样例；每个交易日必须有明确状态，停牌不能靠缺行猜测。日历包含休市日，两家交易所分别记录。规范数据以元、股/份、带时区时间表示。

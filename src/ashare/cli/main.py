@@ -511,3 +511,33 @@ def research_suite(
         date.fromisoformat(end),
         split,
     )
+
+
+@apps["research"].command("prepare-free")
+@guarded
+def prepare_free(config: Path = Path("configs/free_backtest.yaml"), root: Path = None):
+    from ashare.data.free_backtest_snapshot import build
+
+    cfg = load_config(config)
+    return build(Path(root or cfg.runtime).resolve(), cfg)
+
+
+@apps["research"].command("trial-free")
+@guarded
+def trial_free(
+    snapshot: str = typer.Option(...),
+    start: str = "2026-01-30",
+    end: str = "2026-09-30",
+    config: Path = Path("configs/free_backtest.yaml"),
+    root: Path = None,
+):
+    from ashare.research.free_trial import run_trial
+
+    cfg = load_config(config)
+    return run_trial(
+        Path(root or cfg.runtime).resolve(),
+        cfg,
+        snapshot,
+        date.fromisoformat(start),
+        date.fromisoformat(end),
+    )

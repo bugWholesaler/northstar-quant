@@ -146,7 +146,42 @@ class CanonicalDataSource(AbstractDataSource):
         ]
 
     def get_dividend(self, instrument):
-        return None  # engine admission blocks snapshots with corporate actions
+        actions = sorted(
+            (
+                a
+                for a in self.tables["actions"]
+                if a.instrument_id == canonical_symbol(instrument.order_book_id)
+                and a.kind == "dividend"
+            ),
+            key=lambda a: (a.ex_date, a.action_id),
+        )
+        if not actions:
+            return None
+
+        def encoded(day):
+            return int(day.strftime("%Y%m%d"))
+
+        return np.array(
+            [
+                (
+                    encoded(a.record_date),
+                    encoded(a.published_at.date()),
+                    float(a.cash_per_share),
+                    encoded(a.ex_date),
+                    encoded(a.pay_date),
+                    1.0,
+                )
+                for a in actions
+            ],
+            dtype=[
+                ("book_closure_date", "i8"),
+                ("announcement_date", "i8"),
+                ("dividend_cash_before_tax", "f8"),
+                ("ex_dividend_date", "i8"),
+                ("payable_date", "i8"),
+                ("round_lot", "f8"),
+            ],
+        )
 
     def get_split(self, instrument):
         return None

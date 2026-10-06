@@ -88,6 +88,20 @@ def metrics(output, capital, annual_cost=Decimal(0)):
         "frequency": "daily",
         "sessions": len(values),
         "fees": str(fees),
+        "net_cash_dividends": str(
+            sum(
+                decimal(e["payload"].get("amount", 0))
+                for e in output.get("events", [])
+                if e["kind"] == "DividendPaid"
+            )
+        ),
+        "dividend_tax_scenario": str(
+            sum(
+                decimal(e["payload"].get("scenario_tax", 0))
+                for e in output.get("events", [])
+                if e["kind"] == "DividendEntitled"
+            )
+        ),
         "fee_breakdown": {
             key: str(sum(decimal(fill[key]) for fill in output["fills"]))
             for key in ("commission", "tax", "other_fees")
@@ -146,12 +160,17 @@ def run(
         "snapshot": snapshot.model_dump(mode="json"),
         "engine": "RQAlpha",
     }
-    rid = stable_id(identity)
+    cache_key = stable_id(identity)
+    from uuid import uuid4
+
+    rid = cache_key + "-" + uuid4().hex[:8]
     directory = root / "runs" / rid
     directory.mkdir(parents=True, exist_ok=True)
     manifest = {
         **identity,
         "run_id": rid,
+        "cache_key": cache_key,
+        "profile": snapshot.profile,
         "status": "RUNNING",
         "started_at": datetime.now().astimezone().isoformat(),
         "assumptions": [
@@ -164,6 +183,16 @@ def run(
             else "历史可用时间可能为推定；全市场范围未验证",
         ],
     }
+    if snapshot.profile == "research_scenario":
+        import json
+
+        provenance = json.loads((root / "snapshots" / snapshot_id / "provenance.json").read_text())
+        manifest["assumptions"] += provenance.get("assumptions", [])
+        manifest["assumptions"].append(
+            "实际股息税配置="
+            + str(config.research_dividend_tax)
+            + "；仅研究情景，个人真实投资许可及账户批准未完成"
+        )
     atomic_json(directory / "manifest.json", manifest)
     try:
         output = RQAlphaEngine().evaluate(spec, snapshot, tables, config, root)
@@ -290,7 +319,7 @@ def suite(root, config, snapshot_id, start, end, split="synthetic"):
             split,
         )
         results.append({"name": scenario["name"], **result})
-    for strategy in ("etf_trend", "stock_lowvol", "buy_hold", "stock_equal"):
+    for strategy in ("etf_trend", "stock_lowvol", "buy_hold", "stock_equal", "combined_passive"):
         result = run(root, config, snapshot_id, start, end, strategy, split=split)
         results.append({"name": strategy, **result})
     atomic_json(directory / "results.json", results)
@@ -300,7 +329,7 @@ def suite(root, config, snapshot_id, start, end, split="synthetic"):
             **registration,
             "suite_id": suite_id,
             "status": "SUCCESS",
-            "scope_warning": "合成样本不能证明收益；真实数据权限和全市场覆盖单独验收",
+            "scope_warning": "条件样本与成交/税务情景，不能证明投资效果或全市场能力",
         },
         results,
         [],

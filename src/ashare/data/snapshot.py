@@ -136,8 +136,13 @@ def publish(
     scope: str,
     availability: str,
     provenance: dict | None = None,
+    profile: str = "verified",
 ) -> Snapshot:
     quality = validate_tables(tables)
+    if profile not in ("verified", "research_scenario"):
+        raise AshareError("SNAPSHOT_PROFILE", "unknown snapshot profile")
+    if profile == "research_scenario":
+        quality.update(execution_inputs="SCENARIO_DERIVED", trading_ready=False)
     if any(b.availability_basis != availability for b in tables["bars"]):
         raise AshareError(
             "AVAILABILITY_MISMATCH", "snapshot label does not match actual bar time basis"
@@ -163,6 +168,7 @@ def publish(
             "scope": scope,
             "availability": availability,
             "transform": "1.0",
+            "profile": profile,
             "provenance": provenance or {},
         }
     )
@@ -197,6 +203,7 @@ def publish(
             end=max(x.trade_date for x in tables["bars"]),
             quality=quality,
             availability=availability,
+            profile=profile,
         )
         atomic_json(staging / "manifest.json", snapshot)
         os.rename(staging, destination)

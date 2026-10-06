@@ -77,10 +77,19 @@ class Config(Contract):
     broker_mapping_verified: bool = False
     broker_confirmed: bool = False
     personal_investment_engine_license_confirmed: bool = False
+    engine_use: Literal["personal_investment", "noncommercial_research"] = "personal_investment"
+    backtest_profile: Literal["verified", "research_scenario"] = "verified"
+    research_etf_provider: Literal["akshare_eastmoney", "tencent"] = "akshare_eastmoney"
+    research_etf_network_route: Literal["environment", "direct"] = "environment"
+    research_dividend_tax: Decimal = Field(default=Decimal("0.2"), ge=0, le=Decimal("0.2"))
     strategy_approved: bool = False
 
     @model_validator(mode="after")
     def isolation(self):
+        if self.backtest_profile == "research_scenario" and self.mode != Mode.RESEARCH:
+            raise ValueError("research scenario cannot enter paper/manual/demo")
+        if self.engine_use == "noncommercial_research" and self.mode != Mode.RESEARCH:
+            raise ValueError("noncommercial research declaration requires research mode")
         if self.account_id != self.mode.value:
             raise ValueError("v1 account id must match isolated mode database")
         if self.mode == Mode.PAPER and self.availability != "observed":

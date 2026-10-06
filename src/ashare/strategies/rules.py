@@ -6,6 +6,11 @@ from ashare.domain.models import TargetPortfolio, at, stable_id
 from ashare.ports.interfaces import MarketDataView
 
 
+def research_price(bar):
+    value = getattr(bar, "research_close", None)
+    return value if value is not None else bar.close * bar.factor
+
+
 def target(view, day, weights, reasons, strategy, days=3, status="REBALANCE"):
     future = view.next_days(day, days)
     fields = dict(
@@ -38,7 +43,7 @@ class ETFTrend:
             last = bars[-1]
             if last.st or last.delisting_period:
                 continue
-            value = last.close * last.factor / (bars[0].close * bars[0].factor) - 1
+            value = research_price(last) / research_price(bars[0]) - 1
             if value > 0:
                 candidates.append((value, symbol))
         selected = sorted(candidates, key=lambda x: (-x[0], x[1]))[:2]
@@ -74,7 +79,7 @@ class StockLowVol:
             if not bars or bars[-1].st or bars[-1].delisting_period:
                 continue
             liquidity = median(b.amount for b in bars[-self.config.liquidity_window :])
-            prices = [b.close * b.factor for b in bars[-self.config.stock_window - 1 :]]
+            prices = [research_price(b) for b in bars[-self.config.stock_window - 1 :]]
             volatility = Decimal(str(stdev(float(b / a - 1) for a, b in zip(prices, prices[1:]))))
             candidates.append((liquidity, volatility, symbol))
         liquid = sorted(candidates, key=lambda x: (-x[0], x[2]))[: self.config.liquidity_top]

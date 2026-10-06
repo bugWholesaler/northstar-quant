@@ -77,6 +77,10 @@ def _run(ledger, root: Path, config, day, sid, now=None):
                     )
                 return {**result, "report": report(ledger, root, day)}
     snapshot, tables = Store(root).load(sid)
+    if snapshot.profile != "verified":
+        raise AshareError(
+            "SNAPSHOT_PROFILE", "scenario snapshot is not a prospective execution input"
+        )
     if ledger.mode == Mode.PAPER and snapshot.availability != "observed":
         raise AshareError("OBSERVATION_REQUIRED", "paper requires true first-observed timestamps")
     for record_day, old_hash in ledger.db.execute("SELECT day,hash FROM daily_inputs"):

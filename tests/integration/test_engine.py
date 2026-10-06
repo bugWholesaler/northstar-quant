@@ -297,3 +297,12 @@ def test_cost_decider_accumulates_minimum_per_order(monkeypatch):
     ]
     assert [cost.commission for cost in costs] == [5, 0, 1]
     assert sum(Decimal(str(cost.other_fees)) for cost in costs) == Decimal("0.2")
+
+
+def test_extra_day_delay_executes_frozen_plan_instead_of_chasing_date(market, config):
+    root, snapshot, tables = market
+    result = RQAlphaEngine().evaluate(
+        spec(snapshot, config, delay_days=2), snapshot, tables, config, root
+    )
+    assert result["fills"]
+    assert min(fill["trade_date"] for fill in result["fills"]) == "2025-05-05"

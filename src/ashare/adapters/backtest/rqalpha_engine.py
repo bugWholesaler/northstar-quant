@@ -42,7 +42,9 @@ def matching_config(config, spec, root):
                 "dividend_reinvestment": False,
                 "stock_t1": True,
                 "auto_switch_order_value": False,
-                "dividend_tax_rate": 0,
+                "dividend_tax_rate": float(config.research_dividend_tax)
+                if config.backtest_profile == "research_scenario"
+                else 0,
             },
             "sys_simulation": {
                 "matching_type": "current_bar",
@@ -106,15 +108,39 @@ class RQAlphaEngine:
         if (
             snapshot.scope != "synthetic_sample"
             and not config.personal_investment_engine_license_confirmed
+            and not (config.mode == Mode.RESEARCH and config.engine_use == "noncommercial_research")
         ):
             raise AshareError(
                 "ENGINE_LICENSE",
                 "real-data investment use requires license applicability confirmation",
             )
-        if tables["actions"]:
+        if snapshot.profile != config.backtest_profile:
+            raise AshareError("SNAPSHOT_PROFILE", "config and snapshot execution profile differ")
+        scenario = snapshot.profile == "research_scenario"
+        if scenario and (config.mode != Mode.RESEARCH or frozen_plans is not None):
+            raise AshareError(
+                "MODE_ISOLATION", "scenario snapshots are only for retrospective research"
+            )
+        if tables["actions"] and not scenario:
             raise Unsupported(
                 "corporate-action engine parity is not yet verified; run INVALID, no performance published"
             )
+        if scenario:
+            days = sorted(
+                c.trade_date for c in tables["calendar"] if c.exchange == "XSHG" and c.is_open
+            )
+            for action in tables["actions"]:
+                if action.kind != "dividend" or not action.implemented or action.bonus_ratio:
+                    raise Unsupported("scenario supports implemented cash dividends only")
+                before = [d for d in days if d < action.ex_date]
+                if (
+                    not before
+                    or before[-1] != action.record_date
+                    or action.pay_date < action.ex_date
+                ):
+                    raise Unsupported(
+                        "cash-dividend record/ex/pay timing requires verified adjacent calendar dates"
+                    )
         if any(i.delisted_on and i.delisted_on <= spec.end for i in tables["instruments"]):
             raise Unsupported(
                 "delisting engine/ledger parity not verified; no automatic cash return"
@@ -203,6 +229,60 @@ class RQAlphaEngine:
                 )
 
             env.event_bus.add_listener(EVENT.TRADE, trade)
+
+        def before_trading(context):
+            day = context.now.date()
+            if not scenario:
+                return
+            for action in tables["actions"]:
+                if action.ex_date == day:
+                    position = ledger.view(at(action.record_date)).positions.get(
+                        action.instrument_id
+                    )
+                    quantity = position.quantity if position else 0
+                    if quantity:
+                        gross = money(quantity * action.cash_per_share)
+                        net = money(
+                            quantity * action.cash_per_share * (1 - config.research_dividend_tax)
+                        )
+                        ledger.append(
+                            [
+                                new_event(
+                                    config.account_id,
+                                    mode,
+                                    "DividendEntitled",
+                                    day,
+                                    {
+                                        "action_id": action.action_id,
+                                        "amount": str(net),
+                                        "gross_amount": str(gross),
+                                        "scenario_tax": str(gross - net),
+                                        "quantity": quantity,
+                                    },
+                                    "corporate_action",
+                                    key=[action.action_id, "entitled"],
+                                    event_time=at(day, 9, 0),
+                                )
+                            ]
+                        )
+                if action.pay_date == day and action.action_id in ledger.state()["receivables"]:
+                    ledger.append(
+                        [
+                            new_event(
+                                config.account_id,
+                                mode,
+                                "DividendPaid",
+                                day,
+                                {
+                                    "action_id": action.action_id,
+                                    "amount": ledger.state()["receivables"][action.action_id],
+                                },
+                                "corporate_action",
+                                key=[action.action_id, "paid"],
+                                event_time=at(day, 9, 1),
+                            )
+                        ]
+                    )
 
         def handle_bar(context, bars):
             nonlocal active_intent
@@ -386,12 +466,20 @@ class RQAlphaEngine:
                 "stock_lowvol": [StockLowVol(config)],
                 "buy_hold": [BuyHold(config)],
                 "stock_equal": [StockEqualWeight(config)],
+                "combined_passive": [BuyHold(config), StockEqualWeight(config)],
             }[spec.strategy]
             if view.is_month_end(day) or (spec.strategy == "buy_hold" and current_target is None):
                 targets = [strategy.generate(view, day) for strategy in strategies]
                 current_target = aggregate(targets)
                 if current_target:
                     output["targets"].append(current_target.model_dump(mode="json"))
+            if (
+                pending
+                and pending["valid_date"] > str(day)
+                and current_target
+                and pending["target"]["target_id"] == current_target.target_id
+            ):
+                return  # keep the frozen deferred plan instead of postponing it every day
             pending = None
             if current_target:
                 future = view.next_days(day, spec.delay_days)[-1]
@@ -407,6 +495,7 @@ class RQAlphaEngine:
             run_func(
                 init=init,
                 handle_bar=handle_bar,
+                before_trading=before_trading,
                 after_trading=after_trading,
                 config=output["requested"],
             )

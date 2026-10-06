@@ -66,6 +66,8 @@ def preflight(ledger, config, pid, snapshot, tables, confirmation=None, now=None
     if now.date().isoformat() != plan["valid_date"]:
         reasons.append("PLAN_WRONG_DAY")
     reasons.extend(config.manual_blockers())
+    if snapshot.profile != "verified":
+        reasons.append("RESEARCH_SCENARIO_NOT_EXECUTABLE")
     if ledger.mode != config.mode or ledger.account_id != config.account_id:
         reasons.append("MODE_ISOLATION")
     if ledger.mode.value == "manual" and snapshot.scope == "synthetic_sample":
