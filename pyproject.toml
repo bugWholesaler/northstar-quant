@@ -11,6 +11,7 @@ dependencies = ["pydantic>=2.12,<3", "pyarrow>=20,<24", "duckdb>=1.4,<2", "PyYAM
 
 [project.optional-dependencies]
 tushare = ["tushare>=1.4,<2"]
+baostock = ["baostock==0.9.4"]
 
 [dependency-groups]
 dev = ["pytest>=8,<10", "ruff>=0.14,<1"]

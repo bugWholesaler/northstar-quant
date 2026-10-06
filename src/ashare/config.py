@@ -1,3 +1,4 @@
+from datetime import date
 from decimal import Decimal
 from pathlib import Path
 from typing import Literal
@@ -30,12 +31,33 @@ class Risk(Contract):
     approved: bool = False
 
 
+class BaoStockSettings(Contract):
+    start: date = date(2025, 1, 1)
+    end: date = date(2026, 9, 30)
+    etf_start: date | None = None
+    etf_price_mode: Literal["verified_adjusted", "unadjusted_proxy"] = "verified_adjusted"
+    symbols: list[str] = Field(default_factory=list)
+    timeout: int = Field(default=30, ge=1, le=120)
+    refresh: bool = False
+
+    @model_validator(mode="after")
+    def dates(self):
+        if self.start > self.end:
+            raise ValueError("BaoStock start follows end")
+        if self.etf_start and not self.start <= self.etf_start <= self.end:
+            raise ValueError("ETF start must be within registered range")
+        if len(self.symbols) != len(set(self.symbols)):
+            raise ValueError("duplicate BaoStock symbols")
+        return self
+
+
 class Config(Contract):
     mode: Mode = Mode.PAPER
     account_id: str = "paper"
     runtime: str = "runtime"
-    provider: Literal["csv", "tushare"] = "csv"
+    provider: Literal["csv", "tushare", "baostock"] = "csv"
     csv_directory: str | None = None
+    baostock: BaoStockSettings = Field(default_factory=BaoStockSettings)
     scope: Literal["synthetic_sample", "real_sample", "historical_full"] = "real_sample"
     availability: Literal["historical_assumption", "observed"] = "historical_assumption"
     initial_cash: Decimal = Field(default=Decimal("200000"), gt=0)

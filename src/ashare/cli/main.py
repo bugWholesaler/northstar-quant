@@ -11,6 +11,7 @@ import typer
 from pydantic import ValidationError
 
 from ashare.accounting.ledger import Ledger, new_event
+from ashare.adapters.data.baostock_provider import BaoStockProvider
 from ashare.adapters.data.csv_provider import CSVProvider
 from ashare.adapters.data.tushare_provider import TushareProvider
 from ashare.config import load_config
@@ -172,8 +173,10 @@ def backtest(
 @apps["data"].command()
 @guarded
 def probe(provider: str = "tushare", root: Path = Path("runtime")):
+    if provider == "baostock":
+        return BaoStockProvider().probe(root.resolve())
     if provider != "tushare":
-        raise AshareError("PROVIDER", "only tushare probing supported")
+        raise AshareError("PROVIDER", "registered probe providers: tushare, baostock")
     result = TushareProvider().probe()
     atomic_json(root / "data-capabilities.json", result)
     return result
@@ -186,6 +189,10 @@ def data_sync(
 ):
     cfg = load_config(config)
     directory = directory or (Path(cfg.csv_directory) if cfg.csv_directory else None)
+    if cfg.provider == "baostock":
+        return BaoStockProvider(timeout=cfg.baostock.timeout).sync(
+            cfg, Path(root or cfg.runtime).resolve()
+        )
     if cfg.provider == "tushare":
         return TushareProvider().sync(cfg)
     if directory is None:
@@ -203,7 +210,18 @@ def data_fetch(
     root: Path = Path("runtime"),
     page_size: int = 1000,
     refresh: bool = False,
+    provider: str = "tushare",
 ):
+    if provider == "baostock":
+        result = BaoStockProvider().fetch(
+            root.resolve(), dataset, json.loads(parameters.read_text()), refresh
+        )
+        return {
+            key: result[key]
+            for key in ("request_id", "observed_at", "fields", "directory", "cached")
+        } | {"rows": len(result["rows"])}
+    if provider != "tushare":
+        raise AshareError("PROVIDER", "unknown provider")
     result = TushareProvider().fetch_pages(
         root, dataset, json.loads(parameters.read_text()), page_size, refresh=refresh
     )

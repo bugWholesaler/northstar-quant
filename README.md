@@ -34,6 +34,19 @@ uv run ashare research suite --config configs/demo.yaml \
 
 套件包括成本 2/3 倍、延后一天、10/30 万本金、10 bp 不利价格，以及 ETF、股票单策略和被动/等权基准。报告区分情景费率、日频成交代理与实际成交。
 
+## 免费真实数据试用：BaoStock
+
+已经实测匿名取数，可先运行真实小样本信号预览：
+
+```sh
+uv sync --frozen --extra baostock
+uv run --extra baostock ashare data sync --config configs/baostock.yaml
+```
+
+本次为 20 只股票＋3 只 ETF、9,023 条未复权日线。股票历史/后复权序列可用；ETF 本次只返回 2026 年起历史且忽略复权参数，试用配置明确使用未复权价格代理，信号标为 `etf_trend_price_proxy`。输出 report/signals 路径，不生成交易清单、账本或收益。
+
+`RESEARCH_PREVIEW_READY` / `executable=false` 是研究预览状态，完整交易 snapshot 尚未发布。具体命令、覆盖和未验证项见 [免费数据快速开始](docs/BAOSTOCK_QUICKSTART.md) 与 [实测 ADR](docs/adr/0002-baostock-free-learning.md)。
+
 ## 接入自己的数据
 
 [数据字典](docs/DATA_DICTIONARY.md) 说明 `instruments.csv`、`calendar.csv`、`bars.csv`、`actions.csv` 四张规范表。`fixtures/synthetic/` 提供可运行样例；每个交易日必须有明确状态，停牌不能靠缺行猜测。日历包含休市日，两家交易所分别记录。规范数据以元、股/份、带时区时间表示。
