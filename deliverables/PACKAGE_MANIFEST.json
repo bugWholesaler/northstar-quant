@@ -1,0 +1,90 @@
+{
+  "design_version": "1.0",
+  "created_date": "2026-10-05",
+  "timezone": "Asia/Shanghai",
+  "entrypoint": "DESIGN.md",
+  "implementation_status": "design_only_not_implemented",
+  "read_order": [
+    "DESIGN.md",
+    "docs/DAILY_RUNBOOK.md",
+    "docs/AGENT_TASKS.md",
+    "docs/IMPLEMENTATION_PLAN.md",
+    "docs/MODULES_AND_ALTERNATIVES.md"
+  ],
+  "validation_scope": "Document links, HTML presentation, source index and package checksums only; no trading system or strategy run.",
+  "omitted": [
+    "paid market data",
+    "account credentials",
+    "external source-code caches",
+    "commercial research PDFs",
+    "Git history",
+    "QA screenshots"
+  ],
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2001,
+      "sha256": "892257fc66411915e5341d71435e7d476c833f27efeac1af67f2a54555f8de73"
+    },
+    {
+      "path": "DESIGN.md",
+      "bytes": 17643,
+      "sha256": "879ce37db8984c500202baee7cf195a08d33adedcba44f5fa13c7d8baf905f62"
+    },
+    {
+      "path": "a-share-minimal-system-plan.html",
+      "bytes": 195578,
+      "sha256": "57a06e9126470ecc4111568d5009f487f8adc482439d77fce877ae604821226b"
+    },
+    {
+      "path": "docs/DAILY_RUNBOOK.md",
+      "bytes": 13283,
+      "sha256": "d5a77b8f5bf05d24d2140952de8b147ff3d1fb9d27a2845904e854b1e4384cbe"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_PLAN.md",
+      "bytes": 52261,
+      "sha256": "b949fe1fea9cc5870727ef60ded7fee8df27c82e7f27071be070240a685414ba"
+    },
+    {
+      "path": "docs/MODULES_AND_ALTERNATIVES.md",
+      "bytes": 24662,
+      "sha256": "0b19517ce6677210d3764d5566f4372bc337b043de54b5b2843ff4e7b6498604"
+    },
+    {
+      "path": "docs/AGENT_TASKS.md",
+      "bytes": 17955,
+      "sha256": "8eb45c49944be36852e0563d849463409653e0aba55c9c8455bd952fb97a1aca"
+    },
+    {
+      "path": "docs/RESEARCH_DECISIONS.md",
+      "bytes": 16846,
+      "sha256": "bc210c1fde1a546cd9e834919241356fb2b97dbc05685946e37ed8a7f47138b8"
+    },
+    {
+      "path": "docs/research/sources.json",
+      "bytes": 24315,
+      "sha256": "28a5a6a37165e894c4a9004e13485274931ab6fcc432bddb77a234fb22c2226c"
+    },
+    {
+      "path": "docs/research/github-snapshot.json",
+      "bytes": 3577,
+      "sha256": "0ca34df973529a2c6b8d1b0351ad57843b448a29aa02bcab1fb8ce45a4ac61ab"
+    },
+    {
+      "path": "docs/qa/verification.json",
+      "bytes": 1089,
+      "sha256": "fb696a3175ace2261cd211e6f65f2f0f224179f387b53c4f9667f0955b59e7df"
+    },
+    {
+      "path": "tools/render_plan.mjs",
+      "bytes": 15209,
+      "sha256": "ec2d997eb146ebbcbe971b03609b53b8b390117923be65073a23228c586da0f9"
+    },
+    {
+      "path": "tools/check_plan.mjs",
+      "bytes": 5052,
+      "sha256": "0e9ed7c57e826481d2f5ac0a5c6724e73d498066ea5314e637ecb4974cba3463"
+    }
+  ]
+}
